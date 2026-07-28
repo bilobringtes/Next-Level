@@ -258,6 +258,13 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 .strength-row .top .name{font-family:var(--font-head);font-weight:600;font-size:13px}
 .strength-row .top .val{font-family:var(--font-head);font-weight:700;font-size:13px;color:#fff}
 .bar{height:8px;background:#0a0a0a;border-radius:999px;overflow:hidden;border:1px solid var(--stroke-2)}
+
+.badge-item{text-align:center;padding:12px 4px;border-radius:12px;background:var(--card-3);border:1px solid var(--stroke)}
+.badge-item .emj{font-size:22px;display:block;margin-bottom:4px;filter:grayscale(1);opacity:0.35}
+.badge-item.unlocked{background:linear-gradient(160deg,rgba(230,0,0,0.14),var(--card-3));border-color:rgba(230,0,0,0.4)}
+.badge-item.unlocked .emj{filter:none;opacity:1}
+.badge-item .bname{font-size:9.5px;font-weight:600;color:var(--muted);line-height:1.25;display:block}
+.badge-item.unlocked .bname{color:var(--white)}
 .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--red-2),var(--red));box-shadow:0 0 8px rgba(230,0,0,0.5);border-radius:999px}
 .chart-card{margin-top:16px;background:var(--card-2);border-radius:20px;padding:16px;border:1px solid var(--stroke)}
 .chart-card svg{width:100%;height:140px;display:block;margin-top:8px}
@@ -849,29 +856,32 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 
         <div class="kpi-row">
           <div class="kpi"><div class="n" id="kpiXp">2450</div><div class="l">Gesamt-XP</div></div>
-          <div class="kpi"><div class="n">38</div><div class="l">Missionen</div></div>
-          <div class="kpi"><div class="n">12</div><div class="l">Badges</div></div>
+          <div class="kpi"><div class="n" id="kpiMissions">38</div><div class="l">Missionen</div></div>
+          <div class="kpi"><div class="n" id="kpiBadges">0</div><div class="l">Badges</div></div>
         </div>
 
         <div class="strengths">
-          <div class="q-label">DEINE STÄRKEN</div>
-          <div class="strength-row"><div class="top"><span class="name">IQ & Rate</span><span class="val">85%</span></div><div class="bar"><i style="width:85%"></i></div></div>
-          <div class="strength-row"><div class="top"><span class="name">Kaltakquise</span><span class="val">72%</span></div><div class="bar"><i style="width:72%"></i></div></div>
-          <div class="strength-row"><div class="top"><span class="name">Produkte</span><span class="val">62%</span></div><div class="bar"><i style="width:62%"></i></div></div>
+          <div class="q-label">DEINE STÄRKEN <span style="text-transform:none;font-weight:500;color:var(--muted-2)">· Genauigkeit pro Mission</span></div>
+          <div id="strengthsList"></div>
+        </div>
+
+        <div class="badges-card" style="background:var(--card-2);border:1px solid var(--stroke);border-radius:16px;padding:16px;margin-bottom:16px">
+          <div class="q-label">ERFOLGE</div>
+          <div id="badgesGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"></div>
         </div>
 
         <div class="chart-card">
-          <div class="q-label">DEINE ENTWICKLUNG</div>
+          <div class="q-label">DEINE ENTWICKLUNG <span style="text-transform:none;font-weight:500;color:var(--muted-2)">· diese Woche</span></div>
           <svg viewBox="0 0 320 140" preserveAspectRatio="none">
             <defs><linearGradient id="xpArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E60000" stop-opacity="0.35"/><stop offset="100%" stop-color="#E60000" stop-opacity="0"/></linearGradient></defs>
             <line x1="20" y1="20" x2="310" y2="20" stroke="#1f1f1f" stroke-width="1"/>
             <line x1="20" y1="60" x2="310" y2="60" stroke="#1f1f1f" stroke-width="1"/>
             <line x1="20" y1="100" x2="310" y2="100" stroke="#1f1f1f" stroke-width="1"/>
             <line x1="20" y1="120" x2="310" y2="120" stroke="#333" stroke-width="1"/>
-            <path d="M20,110 L68,96 L116,104 L164,80 L212,90 L260,60 L308,70 L308,120 L20,120 Z" fill="url(#xpArea)"/>
-            <path d="M20,110 L68,96 L116,104 L164,80 L212,90 L260,60 L308,70" fill="none" stroke="#E60000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path id="xpChartArea" d="M20,120 L68,120 L116,120 L164,120 L212,120 L260,120 L308,120 L308,120 L20,120 Z" fill="url(#xpArea)"/>
+            <path id="xpChartLine" d="M20,120 L68,120 L116,120 L164,120 L212,120 L260,120 L308,120" fill="none" stroke="#E60000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
             <g fill="#fff" stroke="#E60000" stroke-width="2">
-              <circle cx="20" cy="110" r="3.5"/><circle cx="68" cy="96" r="3.5"/><circle cx="116" cy="104" r="3.5"/><circle cx="164" cy="80" r="3.5"/><circle cx="212" cy="90" r="3.5"/><circle cx="260" cy="60" r="4.5"/><circle cx="308" cy="70" r="3.5"/>
+              <circle id="xpDot0" cx="20" cy="120" r="3.5"/><circle id="xpDot1" cx="68" cy="120" r="3.5"/><circle id="xpDot2" cx="116" cy="120" r="3.5"/><circle id="xpDot3" cx="164" cy="120" r="3.5"/><circle id="xpDot4" cx="212" cy="120" r="3.5"/><circle id="xpDot5" cx="260" cy="120" r="3.5"/><circle id="xpDot6" cx="308" cy="120" r="3.5"/>
             </g>
             <g fill="#6b6b6b" font-family="Space Grotesk, sans-serif" font-size="10" font-weight="500" text-anchor="middle">
               <text x="20" y="136">Mo</text><text x="68" y="136">Di</text><text x="116" y="136">Mi</text><text x="164" y="136">Do</text><text x="212" y="136">Fr</text><text x="260" y="136">Sa</text><text x="308" y="136">So</text>
@@ -884,10 +894,10 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
           </div>
           <div class="body">
-            <h4><span>GOLD LEAGUE</span></h4>
-            <p>Rang 27 · Aufstieg zur Platin bei Rang 10</p>
+            <h4><span id="leagueName">BRONZE LEAGUE</span></h4>
+            <p id="leagueSub">Rang – · lädt…</p>
           </div>
-          <div class="delta">+6</div>
+          <div class="delta" id="leagueDelta">–</div>
         </div>
       </div>
 
@@ -950,10 +960,10 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
             <div class="p-body"><h5>Mein Fortschritt</h5><p>XP-Verlauf, Stärken, Streak</p></div>
             <div class="p-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
           </div>
-          <div class="prof-item" onclick="toast('Erfolge kommen in Stufe 2 🚀')">
+          <div class="prof-item" onclick="go('progress')">
             <div class="p-icn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></div>
-            <div class="p-body"><h5>Erfolge & Badges</h5><p>12 freigeschaltet</p></div>
-            <div class="p-val">12 🏅</div>
+            <div class="p-body"><h5>Erfolge & Badges</h5><p id="profBadgesSub">0 freigeschaltet</p></div>
+            <div class="p-val" id="profBadgesVal">0 🏅</div>
             <div class="p-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
           </div>
           <div class="prof-item" onclick="go('trackPicker')">
@@ -1066,6 +1076,9 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 
       <div class="screen-scroll" style="padding-bottom:100px">
         <div class="header">
+          <button class="back" onclick="exitBattle()" aria-label="Zurück">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
           <h2>1-VS-1 BATTLE</h2>
           <div class="live-indicator">LIVE</div>
         </div>
@@ -1201,7 +1214,7 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
    ============================================================ */
 
 /* -------- STATE -------- */
-const DEFAULT_STATE = { name:"Michael", level:7, xp:2450, streak:12, track:null, completedMissions:[], answers:[], missionProgress:{} };
+const DEFAULT_STATE = { name:"Michael", level:7, xp:2450, streak:12, track:null, completedMissions:[], answers:[], missionProgress:{}, xpHistory:[], lastActiveDate:null, battlesWon:0, puzzlesCompleted:0 };
 let state = loadState();
 let pendingTrack = null;
 
@@ -1603,6 +1616,84 @@ function getMissionStatus(missionId){
   return "new";
 }
 
+/* -------- Echter Streak, XP-Verlauf, Stärken, Erfolge -------- */
+function dateStr(d){ return d.toISOString().slice(0,10); }
+
+function logXpAndStreak(amount){
+  const today = dateStr(new Date());
+
+  const entry = state.xpHistory.find(e => e.date === today);
+  if(entry) entry.amount += amount;
+  else state.xpHistory.push({ date: today, amount });
+  if(state.xpHistory.length > 60) state.xpHistory = state.xpHistory.slice(-60);
+
+  if(state.lastActiveDate !== today){
+    const yesterday = dateStr(new Date(Date.now() - 86400000));
+    state.streak = (state.lastActiveDate === yesterday) ? state.streak + 1 : 1;
+    state.lastActiveDate = today;
+  }
+}
+
+function getMissionAccuracy(missionId){
+  const done = state.completedMissions.find(c => c.id === missionId);
+  if(!done) return null;
+  const mission = MISSIONS.find(m => m.id === missionId);
+  if(!mission || !mission.questions.length) return null;
+  return Math.round((done.score / mission.questions.length) * 100);
+}
+
+const BADGES = [
+  { id:"erste", name:"Erste Mission", emj:"🎯", check: s => s.completedMissions.length >= 1 },
+  { id:"trackmeister", name:"Track-Meister", emj:"🏅", check: s => {
+      const track = s.track || "sales";
+      return MISSIONS.filter(m=>m.track===track).every(m => s.completedMissions.some(c=>c.id===m.id));
+    } },
+  { id:"perfekt", name:"Perfekte Runde", emj:"💯", check: s => s.completedMissions.some(c => {
+      const m = MISSIONS.find(mm=>mm.id===c.id);
+      return m && c.score === m.questions.length;
+    }) },
+  { id:"kaempfer", name:"Kämpfer", emj:"⚔️", check: s => s.battlesWon >= 1 },
+  { id:"raetsel", name:"Rätsel-Ass", emj:"🧩", check: s => s.puzzlesCompleted >= 1 },
+  { id:"streak3", name:"3 Tage dran", emj:"🔥", check: s => !!s.lastActiveDate && s.streak >= 3 },
+];
+
+function getEarnedBadges(){ return BADGES.filter(b => b.check(state)); }
+
+function getWeeklyXpData(){
+  const now = new Date();
+  const day = now.getDay();
+  const diffToMonday = (day === 0 ? -6 : 1 - day);
+  const monday = new Date(now);
+  monday.setDate(now.getDate() + diffToMonday);
+  monday.setHours(0,0,0,0);
+
+  const values = [];
+  for(let i=0;i<7;i++){
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const entry = state.xpHistory.find(e => e.date === dateStr(d));
+    values.push(entry ? entry.amount : 0);
+  }
+  return values;
+}
+
+function renderWeeklyChart(){
+  const values = getWeeklyXpData();
+  const xs = [20,68,116,164,212,260,308];
+  const maxVal = Math.max(...values, 100);
+  const ys = xs.map((x,i) => Math.round(120 - Math.min(1, values[i]/maxVal) * 100));
+
+  const lineD = "M" + xs.map((x,i) => `${x},${ys[i]}`).join(" L");
+  const areaD = lineD + ` L${xs[6]},120 L${xs[0]},120 Z`;
+
+  document.getElementById("xpChartArea").setAttribute("d", areaD);
+  document.getElementById("xpChartLine").setAttribute("d", lineD);
+  xs.forEach((x,i) => {
+    const dot = document.getElementById("xpDot" + i);
+    if(dot) dot.setAttribute("cy", ys[i]);
+  });
+}
+
 function filterMissions(filter){
   missionFilter = filter;
   document.querySelectorAll('#missionChips .chip').forEach(c => c.classList.toggle('active', c.dataset.filter === filter));
@@ -1764,6 +1855,7 @@ function finishQuiz(){
     state.completedMissions.push({ id:quizState.missionId, date:new Date().toISOString(), score:quizState.correctCount });
   }
   delete state.missionProgress[quizState.missionId];
+  if(earned > 0) logXpAndStreak(earned);
   saveState();
   if(earned > 0) syncXpToServer(earned, quizState.missionId);
   document.getElementById("scoreN").textContent = quizState.correctCount;
@@ -1865,9 +1957,63 @@ function renderLeaderboard(mode){
 }
 
 /* -------- PROGRESS -------- */
+function getLeagueInfo(){
+  const track = state.track || "sales";
+  const list = (LEADERBOARD[track] || []).map(x => x.isYou ? {...x, xp: state.xp} : x);
+  list.sort((a,b) => b.xp - a.xp);
+  const rank = list.findIndex(x => x.isYou) + 1;
+  const total = list.length || 1;
+
+  const platinAt = Math.ceil(total * 0.15);
+  const goldAt = Math.ceil(total * 0.4);
+  const silberAt = Math.ceil(total * 0.7);
+
+  let league = "BRONZE LEAGUE";
+  if(rank <= platinAt) league = "PLATIN LEAGUE";
+  else if(rank <= goldAt) league = "GOLD LEAGUE";
+  else if(rank <= silberAt) league = "SILBER LEAGUE";
+
+  return { rank, total, league, platinAt, goldAt, silberAt };
+}
+
+function renderLeagueCard(){
+  const { rank, total, league, platinAt, goldAt, silberAt } = getLeagueInfo();
+  document.getElementById("leagueName").textContent = league;
+
+  let hint;
+  if(league === "PLATIN LEAGUE") hint = "Beste Liga erreicht 🏆";
+  else if(league === "GOLD LEAGUE") hint = `Aufstieg zur Platin ab Rang ${platinAt}`;
+  else if(league === "SILBER LEAGUE") hint = `Aufstieg zur Gold ab Rang ${goldAt}`;
+  else hint = `Aufstieg zur Silber ab Rang ${silberAt}`;
+
+  document.getElementById("leagueSub").textContent = `Rang ${rank} von ${total} · ${hint}`;
+  document.getElementById("leagueDelta").textContent = "#" + rank;
+}
+
 function renderProgress(){
   document.getElementById("streakNum").textContent = state.streak;
   document.getElementById("kpiXp").textContent = state.xp;
+  document.getElementById("kpiMissions").textContent = state.completedMissions.length;
+
+  const earned = getEarnedBadges();
+  document.getElementById("kpiBadges").textContent = earned.length;
+
+  const track = state.track || "sales";
+  const trackMissions = MISSIONS.filter(m => m.track === track);
+  document.getElementById("strengthsList").innerHTML = trackMissions.map(m => {
+    const acc = getMissionAccuracy(m.id);
+    const pct = acc === null ? 0 : acc;
+    const label = acc === null ? "Noch nicht absolviert" : pct + "%";
+    return `<div class="strength-row"><div class="top"><span class="name">${m.title}</span><span class="val">${label}</span></div><div class="bar"><i style="width:${pct}%"></i></div></div>`;
+  }).join("");
+
+  document.getElementById("badgesGrid").innerHTML = BADGES.map(b => {
+    const unlocked = earned.some(e => e.id === b.id);
+    return `<div class="badge-item ${unlocked ? "unlocked" : ""}"><span class="emj">${b.emj}</span><span class="bname">${b.name}</span></div>`;
+  }).join("");
+
+  renderWeeklyChart();
+  renderLeagueCard();
 }
 
 /* -------- PROFIL -------- */
@@ -1880,6 +2026,9 @@ function renderProfile(){
   document.getElementById("profRole").textContent = authToken ? "Mitarbeiter · Angemeldet" : "Mitarbeiter · Lokaler Demo-Modus";
   document.getElementById("logoutMenuItem").style.display = authToken ? "flex" : "none";
   document.getElementById("resetMenuItem").style.display = authToken ? "none" : "flex";
+  const badgeCount = getEarnedBadges().length;
+  document.getElementById("profBadgesVal").textContent = badgeCount + " 🏅";
+  document.getElementById("profBadgesSub").textContent = badgeCount + " freigeschaltet";
   if(state.track){
     document.getElementById("profTrackEmj").textContent = TRACKS[state.track].emj;
     document.getElementById("profTrackName").textContent = TRACKS[state.track].name + " TRACK";
@@ -2040,6 +2189,8 @@ function finishPuzzle(){
   const newLevel = Math.max(1, Math.ceil(state.xp / 500));
   const levelUp = newLevel > oldLevel;
   state.level = newLevel;
+  state.puzzlesCompleted = (state.puzzlesCompleted || 0) + 1;
+  logXpAndStreak(earned);
   saveState();
   syncXpToServer(earned, "puzzle-" + puzzleState.track);
 
@@ -2090,6 +2241,12 @@ const OPPONENTS = [
   { name: "Melanie R.", team: "Filiale Berlin", avatar: "M" },
   { name: "Tim H.", team: "Filiale Frankfurt", avatar: "T" }
 ];
+
+function exitBattle(){
+  clearInterval(battleTimerInterval);
+  battleState = null;
+  go("battleLobby");
+}
 
 function startMatchmaking() {
   document.getElementById("btSearchingState").querySelector("button").classList.add("disabled");
@@ -2328,6 +2485,8 @@ function finishBattle() {
   const newLevel = Math.max(1, Math.ceil(state.xp / 500));
   const levelUp = newLevel > oldLevel;
   state.level = newLevel;
+  if(userScore > oppScore) state.battlesWon = (state.battlesWon || 0) + 1;
+  if(earnedXp > 0) logXpAndStreak(earnedXp);
   saveState();
   if(earnedXp > 0) syncXpToServer(earnedXp, "battle-" + Date.now());
 
