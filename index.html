@@ -391,6 +391,25 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 .auth-status-pill i{width:6px;height:6px;border-radius:999px;background:var(--muted-2);flex-shrink:0}
 .auth-status-pill.online i{background:var(--success);box-shadow:0 0 6px var(--success)}
 .auth-status-pill.offline i{background:var(--warning)}
+#auth .copyright{pointer-events:auto;cursor:default}
+
+/* ============================================================
+   ADMIN-MODUS (versteckt)
+   ============================================================ */
+.admin-panel{position:fixed;inset:0;background:rgba(4,10,8,0.96);z-index:80;display:flex;align-items:flex-end;justify-content:center}
+.admin-panel.hidden{display:none}
+.admin-inner{width:100%;max-width:440px;max-height:88vh;overflow-y:auto;background:#0c1410;border:1px solid #1f3d2c;border-radius:20px 20px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));font-family:ui-monospace,"SF Mono",Menlo,monospace}
+.admin-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.admin-head span{color:#3ddc84;font-weight:700;font-size:13px;letter-spacing:0.5px}
+.admin-head button{background:none;border:1px solid #2a4a38;color:#9fd8b8;width:28px;height:28px;border-radius:8px;font-size:14px;cursor:pointer}
+.admin-hint{font-size:10.5px;color:#6f9481;line-height:1.5;margin:0 0 16px;font-family:var(--font-body)}
+.admin-label{display:block;font-size:10px;letter-spacing:0.5px;color:#6f9481;margin:14px 0 6px;text-transform:uppercase}
+.admin-input{width:100%;padding:10px 12px;background:#081209;border:1px solid #1f3d2c;border-radius:8px;color:#c8f5db;font-family:inherit;font-size:12.5px}
+.admin-btn{width:100%;padding:11px;margin-top:8px;background:#123a24;border:1px solid #2a5c3c;border-radius:8px;color:#c8f5db;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.admin-btn.small{width:auto;flex:1;margin-top:0}
+.admin-btn.danger{background:#3a1212;border-color:#5c2a2a;color:#f5c8c8;width:100%}
+.admin-row{display:flex;gap:8px;margin-top:8px}
+.admin-json{background:#081209;border:1px solid #1f3d2c;border-radius:8px;padding:10px;font-size:10.5px;line-height:1.6;color:#8fd8ac;max-height:220px;overflow:auto;white-space:pre-wrap;word-break:break-word;margin-top:6px}
 
 /* ============================================================
    PUZZLE (Kategorien-Rätsel)
@@ -476,8 +495,34 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
           <a onclick="skipAuth()">Ohne Konto lokal testen →</a>
         </div>
       </div>
-      <div class="copyright">© 2026 Bülent Uslu · Konzeptvorschau</div>
+      <div class="copyright" onclick="handleAdminTap()" style="user-select:none">© 2026 Bülent Uslu · Konzeptvorschau</div>
     </section>
+
+    <!-- =========================================
+         ADMIN-MODUS (versteckt, 5x auf Copyright tippen)
+         ========================================= -->
+    <div class="admin-panel hidden" id="adminPanel">
+      <div class="admin-inner">
+        <div class="admin-head">
+          <span onclick="handleAdminTap()" style="cursor:default;user-select:none">🛠️ ADMIN-MODUS</span>
+          <button onclick="toggleAdminPanel()" aria-label="Schließen">✕</button>
+        </div>
+        <p class="admin-hint">Nur für dich sichtbar – kein echter Schutz, jeder mit Code-Zugriff könnte das finden. Für echten Adminschutz braucht es später eine serverseitige Prüfung. 5x auf diese Überschrift tippen schließt es genauso wieder wie das Öffnen.</p>
+
+        <label class="admin-label">Server-Adresse (API_BASE)</label>
+        <input id="adminApiUrl" type="text" class="admin-input" placeholder="http://localhost:3000/api">
+        <button class="admin-btn" onclick="adminSaveApiUrl()">Speichern & Verbindung prüfen</button>
+
+        <div class="admin-row">
+          <button class="admin-btn small" onclick="adminAddXp()">+500 XP</button>
+          <button class="admin-btn small" onclick="adminCopyState()">State kopieren</button>
+        </div>
+        <button class="admin-btn small danger" onclick="adminResetAll()">Alles zurücksetzen (State + Login)</button>
+
+        <label class="admin-label">Aktueller State</label>
+        <pre id="adminStateJson" class="admin-json"></pre>
+      </div>
+    </div>
 
     <!-- =========================================
          TRACK PICKER (nach Splash beim ersten Mal)
@@ -1232,11 +1277,13 @@ function saveState(){
 /* ============================================================
    BACKEND-ANBINDUNG
    Sobald next-level-backend-phase1 auf einem echten Server läuft,
-   hier die URL eintragen (z.B. "https://api.deine-domain.de/api").
-   Bis dahin läuft die App unverändert im lokalen Modus weiter -
-   jeder Aufruf schlägt einfach still fehl und der lokale Stand gilt.
+   hier die URL eintragen (z.B. "https://api.deine-domain.de/api") -
+   oder im Admin-Modus (5x auf das Copyright tippen) eintragen, ohne
+   dass der Code angefasst werden muss. Bis dahin läuft die App
+   unverändert im lokalen Modus weiter - jeder Aufruf schlägt still
+   fehl und der lokale Stand gilt.
    ============================================================ */
-const API_BASE = "http://localhost:3000/api";
+let API_BASE = localStorage.getItem("nextlevel_api_base") || "http://localhost:3000/api";
 
 let authToken = localStorage.getItem("nextlevel_token");
 let serverOnline = false;
@@ -1377,6 +1424,77 @@ function logout(){
   authMode = "login";
   renderAuthMode();
   go("auth");
+}
+
+/* ============================================================
+   ADMIN-MODUS
+   5x auf das Copyright im Login-Screen tippen zum Ein-/Ausblenden.
+   WICHTIG: Das ist kein echter Schutz - nur eine versteckte
+   Komfort-Funktion. Jeder mit Zugriff auf den Quellcode könnte das
+   finden. Echter Adminschutz braucht später eine Prüfung auf dem
+   Server, nicht nur im Browser.
+   ============================================================ */
+let adminTapCount = 0;
+let adminTapTimer = null;
+
+function handleAdminTap(){
+  adminTapCount++;
+  clearTimeout(adminTapTimer);
+  adminTapTimer = setTimeout(() => { adminTapCount = 0; }, 3000);
+
+  if(adminTapCount >= 5){
+    adminTapCount = 0;
+    toggleAdminPanel();
+  }
+}
+
+function toggleAdminPanel(){
+  const panel = document.getElementById("adminPanel");
+  const willShow = panel.classList.contains("hidden");
+  if(willShow){
+    document.getElementById("adminApiUrl").value = API_BASE;
+    renderAdminState();
+  }
+  panel.classList.toggle("hidden");
+}
+
+function renderAdminState(){
+  document.getElementById("adminStateJson").textContent = JSON.stringify(state, null, 2);
+}
+
+function adminSaveApiUrl(){
+  const url = document.getElementById("adminApiUrl").value.trim();
+  if(!url) return;
+  localStorage.setItem("nextlevel_api_base", url);
+  API_BASE = url;
+  toast("Server-Adresse gespeichert");
+  checkServer();
+}
+
+function adminAddXp(){
+  state.xp += 500;
+  state.level = Math.max(1, Math.ceil(state.xp / 500));
+  saveState();
+  renderAdminState();
+  toast("+500 XP (Admin)");
+}
+
+function adminCopyState(){
+  const text = JSON.stringify(state, null, 2);
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(
+      () => toast("State kopiert"),
+      () => toast("Kopieren fehlgeschlagen")
+    );
+  } else {
+    toast("Kopieren wird hier nicht unterstützt");
+  }
+}
+
+function adminResetAll(){
+  if(!confirm("Wirklich ALLES zurücksetzen? State und Login-Token werden gelöscht.")) return;
+  localStorage.clear();
+  location.reload();
 }
 
 /* -------- KARRIEREPFADE -------- */
