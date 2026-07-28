@@ -57,6 +57,7 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 /* SCREENS */
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateX(24px);transition:opacity .35s ease, transform .35s ease;overflow:hidden}
 .screen.active{opacity:1;pointer-events:auto;transform:translateX(0)}
+.screen:not(.active),.screen:not(.active) *{pointer-events:none!important}
 .screen.exit-left{transform:translateX(-24px)}
 .screen-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 18px 100px;scrollbar-width:none}
 .screen-scroll::-webkit-scrollbar{display:none}
@@ -356,6 +357,43 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 
 .opp-status{font-size:11.5px;color:var(--muted-2);font-style:italic;margin-top:10px;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px}
 .opp-status.done{color:var(--success);font-weight:600;font-style:normal}
+
+/* ============================================================
+   AUTH SCREEN (Login/Registrierung)
+   ============================================================ */
+#auth .content{padding:40px 24px 24px;flex:1;display:flex;flex-direction:column}
+.field{margin-bottom:14px}
+.field label{display:block;font-family:var(--font-head);font-weight:600;font-size:11px;letter-spacing:0.6px;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.field input{width:100%;padding:13px 14px;background:var(--card-2);border:1.5px solid var(--stroke);border-radius:12px;color:var(--white);font-family:var(--font-body);font-size:15px;font-weight:500;-webkit-appearance:none}
+.field input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(230,0,0,0.15)}
+.field input::placeholder{color:var(--muted-2)}
+.auth-error{background:rgba(230,0,0,0.12);border:1px solid rgba(230,0,0,0.35);color:#ff8a8a;font-size:12.5px;font-weight:600;padding:10px 12px;border-radius:10px;margin:2px 0 14px;display:none}
+.auth-error.show{display:block}
+.auth-switch{text-align:center;margin-top:18px;font-size:12.5px;color:var(--muted)}
+.auth-switch a{color:var(--red);font-family:var(--font-head);font-weight:600;cursor:pointer}
+.auth-offline{margin-top:auto;padding-top:16px;text-align:center}
+.auth-offline a{font-size:11.5px;color:var(--muted-2);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.auth-btn.loading{opacity:0.55;pointer-events:none}
+.auth-status-pill{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-family:var(--font-head);font-weight:600;letter-spacing:0.3px;color:var(--muted);background:var(--card-2);border:1px solid var(--stroke);padding:4px 10px;border-radius:999px}
+.auth-status-pill i{width:6px;height:6px;border-radius:999px;background:var(--muted-2);flex-shrink:0}
+.auth-status-pill.online i{background:var(--success);box-shadow:0 0 6px var(--success)}
+.auth-status-pill.offline i{background:var(--warning)}
+
+/* ============================================================
+   PUZZLE (Kategorien-Rätsel)
+   ============================================================ */
+.puzzle-board{margin:20px 0 24px}
+.puzzle-card{background:var(--card-2);border:1.5px solid var(--stroke);border-radius:28px;padding:48px 24px;min-height:210px;display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--font-head);font-weight:700;font-size:21px;line-height:1.35;box-shadow:var(--glow-soft);transition:transform .25s ease, opacity .25s ease}
+.puzzle-card.leaving{transform:scale(0.92);opacity:0}
+.buckets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bucket{background:var(--card-2);border:1.5px solid var(--stroke);border-radius:16px;padding:16px 6px 14px;text-align:center;cursor:pointer;transition:all .18s ease;display:flex;flex-direction:column;align-items:center;gap:5px}
+.bucket:active{transform:scale(0.95)}
+.bucket .bk-icon{font-size:24px;line-height:1}
+.bucket .bk-title{font-family:var(--font-head);font-weight:700;font-size:11.5px;letter-spacing:0.4px;color:var(--white)}
+.bucket .bk-sub{font-size:9.5px;color:var(--muted);line-height:1.25}
+.bucket.correct{border-color:var(--success);background:rgba(34,197,94,0.15)}
+.bucket.wrong{border-color:var(--red);background:rgba(230,0,0,0.15);animation:bucketShake .35s ease}
+@keyframes bucketShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 </style>
 </head>
 <body>
@@ -374,6 +412,54 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
         <div class="leitidee"><b>Die Lern-App,</b> die sich anfühlt wie ein Spiel.</div>
       </div>
       <div class="credit">Ein Konzept von <strong>Bülent Uslu</strong></div>
+    </section>
+
+    <!-- =========================================
+         AUTH (Login / Registrierung)
+         ========================================= -->
+    <section class="screen" id="auth">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span class="right">
+          <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 5.5C3.5 3 6 1.5 8 1.5s4.5 1.5 7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M3.5 7C5 5.5 6.5 4.7 8 4.7s3 .8 4.5 2.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg>
+          <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><rect x="0.5" y="0.5" width="18" height="9" rx="2.5" stroke="currentColor" stroke-opacity=".6"/><rect x="2" y="2" width="14" height="6" rx="1.2" fill="currentColor"/><rect x="19.5" y="3.5" width="1.5" height="3" rx=".5" fill="currentColor" opacity=".6"/></svg>
+        </span>
+      </div>
+      <div class="content">
+        <div class="tp-eyebrow">Willkommen bei Next Level</div>
+        <h2 class="tp-title" id="authTitle">Anmelden.</h2>
+        <p class="tp-sub" id="authSub">Melde dich an, um deinen Fortschritt geräteübergreifend zu speichern.</p>
+
+        <div style="text-align:center;margin-bottom:18px">
+          <span class="auth-status-pill offline" id="authServerPill"><i></i><span id="authServerPillText">Server wird geprüft…</span></span>
+        </div>
+
+        <div class="auth-error" id="authError"></div>
+
+        <div class="field">
+          <label for="authEmail">E-Mail</label>
+          <input id="authEmail" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="max@firma.de">
+        </div>
+        <div class="field" id="authNameField" style="display:none">
+          <label for="authName">Anzeigename (optional)</label>
+          <input id="authName" type="text" autocomplete="name" placeholder="Wie sollen wir dich nennen?">
+        </div>
+        <div class="field">
+          <label for="authPassword">Passwort</label>
+          <input id="authPassword" type="password" autocomplete="current-password" placeholder="Mindestens 8 Zeichen">
+        </div>
+
+        <button class="next-btn enabled auth-btn" id="authSubmitBtn" style="position:static;width:100%" onclick="submitAuth()">ANMELDEN</button>
+
+        <div class="auth-switch">
+          <span id="authSwitchText">Noch kein Konto?</span> <a onclick="toggleAuthMode()" id="authSwitchLink">Registrieren</a>
+        </div>
+
+        <div class="auth-offline">
+          <a onclick="skipAuth()">Ohne Konto lokal testen →</a>
+        </div>
+      </div>
+      <div class="copyright">© 2026 Bülent Uslu · Konzeptvorschau</div>
     </section>
 
     <!-- =========================================
@@ -438,7 +524,7 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 
       <div class="screen-scroll">
         <div class="top-bar">
-          <div class="avatar" aria-label="Profil" onclick="go('profile')" style="cursor:pointer">M</div>
+          <div class="avatar" id="topBarAvatar" aria-label="Profil" onclick="go('profile')" style="cursor:pointer">M</div>
           <button class="icon-btn" onclick="toast('Kommt in Stufe 2 🚀')" aria-label="Benachrichtigungen">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
             <span class="dot-badge"></span>
@@ -455,7 +541,7 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
         </div>
 
         <div class="card card-glow hello-card">
-          <div class="avatar">M</div>
+          <div class="avatar" id="helloAvatar">M</div>
           <div class="txt">
             <h3>Hallo, <span id="userName">Michael</span>!</h3>
             <p>Bereit für die nächste Mission?</p>
@@ -832,10 +918,10 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
         <div class="prof-hero">
           <div class="prof-avatar">
             <div class="lvl-ring"></div>
-            <span>M</span>
+            <span id="profAvatarInitial">M</span>
           </div>
-          <div class="prof-name">Michael Weber</div>
-          <div class="prof-role">Mitarbeiter · Filiale Köln-City</div>
+          <div class="prof-name" id="profName">Michael Weber</div>
+          <div class="prof-role" id="profRole">Mitarbeiter</div>
           <div class="prof-track-badge" onclick="go('trackPicker')" style="cursor:pointer">
             <span class="emj" id="profTrackEmj">🛒</span>
             <span id="profTrackName">SALES TRACK</span>
@@ -871,7 +957,12 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
             <div class="p-body"><h5>Benachrichtigungen</h5><p>Push, E-Mail, Streak-Reminder</p></div>
             <div class="p-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
           </div>
-          <div class="prof-item" onclick="resetApp()">
+          <div class="prof-item" id="logoutMenuItem" onclick="logout()" style="display:none">
+            <div class="p-icn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+            <div class="p-body"><h5>Abmelden</h5><p>Bei einem anderen Konto anmelden</p></div>
+            <div class="p-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
+          </div>
+          <div class="prof-item" id="resetMenuItem" onclick="resetApp()">
             <div class="p-icn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
             <div class="p-body"><h5>Demo zurücksetzen</h5><p>Alle Werte auf Startwerte zurückstellen</p></div>
             <div class="p-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
@@ -918,7 +1009,7 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 
         <div class="vs-container">
           <div class="battle-avatar-card match">
-            <div class="avatar">M</div>
+            <div class="avatar" id="battleAvatar">M</div>
             <h4>DU</h4>
             <p id="btUserTrack">Sales</p>
           </div>
@@ -1113,6 +1204,150 @@ function loadState(){
 }
 function saveState(){
   try{ localStorage.setItem("nextlevel_user", JSON.stringify(state)); }catch(e){}
+}
+
+/* ============================================================
+   BACKEND-ANBINDUNG
+   Sobald next-level-backend-phase1 auf einem echten Server läuft,
+   hier die URL eintragen (z.B. "https://api.deine-domain.de/api").
+   Bis dahin läuft die App unverändert im lokalen Modus weiter -
+   jeder Aufruf schlägt einfach still fehl und der lokale Stand gilt.
+   ============================================================ */
+const API_BASE = "http://localhost:3000/api";
+
+let authToken = localStorage.getItem("nextlevel_token");
+let serverOnline = false;
+let authMode = "login";
+
+async function apiCall(path, options = {}){
+  const res = await fetch(API_BASE + path, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(authToken ? { "Authorization": "Bearer " + authToken } : {}),
+      ...(options.headers || {})
+    }
+  });
+  const data = await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error(data.error || ("Fehler " + res.status));
+  return data;
+}
+
+async function checkServer(){
+  try{ await apiCall("/health"); serverOnline = true; }
+  catch(e){ serverOnline = false; }
+  updateServerPill();
+  return serverOnline;
+}
+
+function updateServerPill(){
+  const pill = document.getElementById("authServerPill");
+  if(!pill) return;
+  pill.classList.toggle("online", serverOnline);
+  pill.classList.toggle("offline", !serverOnline);
+  document.getElementById("authServerPillText").textContent =
+    serverOnline ? "Server verbunden" : "Server nicht erreichbar – lokaler Modus";
+}
+
+function toggleAuthMode(){
+  authMode = authMode === "login" ? "register" : "login";
+  renderAuthMode();
+}
+function renderAuthMode(){
+  const isLogin = authMode === "login";
+  document.getElementById("authTitle").textContent = isLogin ? "Anmelden." : "Konto erstellen.";
+  document.getElementById("authSub").textContent = isLogin
+    ? "Melde dich an, um deinen Fortschritt geräteübergreifend zu speichern."
+    : "Leg ein Konto an – dein Fortschritt bleibt erhalten, egal auf welchem Gerät du weitermachst.";
+  document.getElementById("authNameField").style.display = isLogin ? "none" : "block";
+  document.getElementById("authSubmitBtn").textContent = isLogin ? "ANMELDEN" : "KONTO ANLEGEN";
+  document.getElementById("authSwitchText").textContent = isLogin ? "Noch kein Konto?" : "Schon ein Konto?";
+  document.getElementById("authSwitchLink").textContent = isLogin ? "Registrieren" : "Anmelden";
+  hideAuthError();
+}
+function showAuthError(msg){
+  const el = document.getElementById("authError");
+  el.textContent = msg;
+  el.classList.add("show");
+}
+function hideAuthError(){
+  document.getElementById("authError").classList.remove("show");
+}
+
+async function submitAuth(){
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+  const displayName = document.getElementById("authName").value.trim();
+  hideAuthError();
+
+  if(!email || !password){ showAuthError("E-Mail und Passwort ausfüllen."); return; }
+  if(authMode === "register" && password.length < 8){ showAuthError("Passwort muss mindestens 8 Zeichen haben."); return; }
+
+  const btn = document.getElementById("authSubmitBtn");
+  const originalText = btn.textContent;
+  btn.classList.add("loading");
+  btn.textContent = "Einen Moment…";
+
+  try{
+    const path = authMode === "login" ? "/auth/login" : "/auth/register";
+    const body = authMode === "login" ? { email, password } : { email, password, displayName };
+    const data = await apiCall(path, { method:"POST", body: JSON.stringify(body) });
+
+    authToken = data.token;
+    localStorage.setItem("nextlevel_token", authToken);
+    serverOnline = true;
+
+    state.name = data.user.display_name || email.split("@")[0];
+    await syncProgressFromServer();
+    saveState();
+    go(state.track ? "home" : "trackPicker");
+  }catch(e){
+    showAuthError(e.message || "Etwas ist schiefgelaufen. Bitte erneut versuchen.");
+  }finally{
+    btn.classList.remove("loading");
+    btn.textContent = originalText;
+  }
+}
+
+function skipAuth(){
+  go(state.track ? "home" : "trackPicker");
+}
+
+async function syncProgressFromServer(){
+  if(!authToken) return false;
+  try{
+    const data = await apiCall("/progress");
+    state.xp = data.xp;
+    state.level = data.level;
+    state.completedMissions = (data.completed_modules || []).map(id => ({ id, date:null, score:null }));
+    serverOnline = true;
+    return true;
+  }catch(e){
+    serverOnline = false;
+    return false;
+  }
+}
+
+async function syncXpToServer(amount, moduleId){
+  if(!authToken) return;
+  try{
+    await apiCall("/progress/add-xp", { method:"POST", body: JSON.stringify({ amount, moduleId }) });
+    serverOnline = true;
+  }catch(e){
+    serverOnline = false;
+    // Kein Problem: der lokale Stand bleibt gültig und ist bereits gespeichert.
+  }
+}
+
+function logout(){
+  if(!confirm("Wirklich abmelden?")) return;
+  authToken = null;
+  localStorage.removeItem("nextlevel_token");
+  localStorage.removeItem("nextlevel_user");
+  state = {...DEFAULT_STATE};
+  authMode = "login";
+  renderAuthMode();
+  go("auth");
 }
 
 /* -------- KARRIEREPFADE -------- */
@@ -1316,6 +1551,10 @@ function confirmTrack(){
 /* -------- HOME -------- */
 function renderHome(){
   document.getElementById("userName").textContent = state.name;
+  const initial = (state.name || "?").charAt(0).toUpperCase();
+  document.getElementById("topBarAvatar").textContent = initial;
+  document.getElementById("helloAvatar").textContent = initial;
+  document.getElementById("battleAvatar").textContent = initial;
   document.getElementById("levelNum").textContent = state.level;
   document.getElementById("xpNum").textContent = state.xp;
   const nextXp = state.level * 500;
@@ -1454,6 +1693,7 @@ function finishQuiz(){
     state.completedMissions.push({ id:quizState.missionId, date:new Date().toISOString(), score:quizState.correctCount });
   }
   saveState();
+  if(earned > 0) syncXpToServer(earned, quizState.missionId);
   document.getElementById("scoreN").textContent = quizState.correctCount;
   document.getElementById("scoreTotal").textContent = quizState.mission.questions.length;
   document.getElementById("resultXp").textContent = earned;
@@ -1563,6 +1803,11 @@ function renderProfile(){
   document.getElementById("profKpiLvl").textContent = state.level;
   document.getElementById("profKpiXp").textContent = state.xp;
   document.getElementById("profKpiStreak").textContent = state.streak;
+  document.getElementById("profName").textContent = state.name;
+  document.getElementById("profAvatarInitial").textContent = (state.name || "?").charAt(0).toUpperCase();
+  document.getElementById("profRole").textContent = authToken ? "Mitarbeiter · Angemeldet" : "Mitarbeiter · Lokaler Demo-Modus";
+  document.getElementById("logoutMenuItem").style.display = authToken ? "flex" : "none";
+  document.getElementById("resetMenuItem").style.display = authToken ? "none" : "flex";
   if(state.track){
     document.getElementById("profTrackEmj").textContent = TRACKS[state.track].emj;
     document.getElementById("profTrackName").textContent = TRACKS[state.track].name + " TRACK";
@@ -1591,14 +1836,24 @@ function toast(msg){
 
 /* -------- INIT -------- */
 window.addEventListener("load", ()=>{
-  // Splash 1.5s → Track-Picker (beim ersten Mal) sonst Home
+  checkServer();
+
+  // Splash 1.5s → Auth (neu/abgemeldet) oder Track-Picker/Home (angemeldet)
   setTimeout(()=>{
     const s = document.getElementById("splash");
     s.classList.add("fadeout");
-    setTimeout(()=>{
+    setTimeout(async ()=>{
       s.classList.remove("active","fadeout");
       currentScreen = "splash";
-      if(!state.track) go("trackPicker"); else go("home");
+
+      if(authToken){
+        await syncProgressFromServer(); // scheitert still, wenn Server (noch) nicht läuft
+        saveState();
+        go(state.track ? "home" : "trackPicker");
+      } else {
+        renderAuthMode();
+        go("auth");
+      }
     }, 500);
   }, 1500);
 
@@ -1606,6 +1861,150 @@ window.addEventListener("load", ()=>{
     navigator.serviceWorker.register("sw.js").catch(()=>{});
   }
 });
+
+/* ============================================================
+   PUZZLE (Kategorien-Rätsel)
+   Tippe die Situations-Karte der richtigen Mission zu.
+   Bei Fehltipp: nochmal versuchen. Nach allen 5 richtig sortiert: +100 XP.
+   ============================================================ */
+const PUZZLE_SHORT = {
+  einwand:"EINWAND", tarif:"TARIF", zubehoer:"ZUBEHÖR",
+  reklamation:"REKLAMATION", vertragsanpassung:"VERTRAG", technik:"TECHNIK",
+  coaching:"COACHING", kennzahlen:"KENNZAHLEN", fuehrung:"FÜHRUNG"
+};
+const PUZZLE_CARDS = {
+  sales: [
+    { text:"Kunde sagt: „Das ist mir zu teuer.“", missionId:"einwand" },
+    { text:"Kunde fragt nach dem passenden Datenvolumen fürs Streaming.", missionId:"tarif" },
+    { text:"Mitarbeiter bietet eine Schutzhülle zum neuen Smartphone an.", missionId:"zubehoer" },
+    { text:"Kunde zögert: „Ich überlege es mir noch.“", missionId:"einwand" },
+    { text:"Mitarbeiter erklärt die Vorteile eines Bundles aus Vertrag und Gerät.", missionId:"tarif" },
+  ],
+  service: [
+    { text:"Kunde beschwert sich: „Meine Rechnung stimmt nicht!“", missionId:"reklamation" },
+    { text:"Kunde möchte seinen Vertrag vorzeitig kündigen.", missionId:"vertragsanpassung" },
+    { text:"Kunde meldet: „Mein Handy hat kein Netz mehr.“", missionId:"technik" },
+    { text:"Kunde ist verärgert über eine falsche Lieferung.", missionId:"reklamation" },
+    { text:"Kunde möchte seinen Tarif auf einen neuen umstellen.", missionId:"vertragsanpassung" },
+  ],
+  leadership: [
+    { text:"Ein Mitarbeiter bittet um Unterstützung bei einem schwierigen Kundengespräch.", missionId:"coaching" },
+    { text:"Die wöchentliche Conversion-Rate ist eingebrochen.", missionId:"kennzahlen" },
+    { text:"Zwei Teammitglieder haben einen Konflikt, der das Team belastet.", missionId:"fuehrung" },
+    { text:"Ein neuer Mitarbeiter möchte seine Gesprächsführung verbessern.", missionId:"coaching" },
+    { text:"Der Teamleiter muss die Quartalsziele mit dem Team besprechen.", missionId:"kennzahlen" },
+  ],
+};
+
+let puzzleState = null;
+
+function startPuzzle(){
+  const track = state.track || "sales";
+  puzzleState = {
+    track,
+    cards: shuffle([...PUZZLE_CARDS[track]]),
+    buckets: MISSIONS.filter(m => m.track === track),
+    index: 0,
+    xpBefore: state.xp,
+    locked: false,
+  };
+  renderPuzzleBuckets();
+  renderPuzzleCard();
+  go("puzzleGame");
+}
+
+function renderPuzzleBuckets(){
+  document.getElementById("puzzleBuckets").innerHTML = puzzleState.buckets.map(m => `
+    <div class="bucket" data-mission="${m.id}" onclick="assignPuzzle('${m.id}')">
+      <div class="bk-icon">${ICN[m.iconType] || "⭐"}</div>
+      <div class="bk-title">${PUZZLE_SHORT[m.id] || m.title.toUpperCase()}</div>
+      <div class="bk-sub">${m.title}</div>
+    </div>
+  `).join("");
+}
+
+function renderPuzzleCard(){
+  const { cards, index } = puzzleState;
+  document.getElementById("pzNum").textContent = index + 1;
+  document.getElementById("puzzleBar").style.width = (index / cards.length * 100) + "%";
+  const cardEl = document.getElementById("puzzleCard");
+  cardEl.classList.remove("leaving");
+  cardEl.textContent = cards[index].text;
+  puzzleState.locked = false;
+  document.querySelectorAll("#puzzleBuckets .bucket").forEach(b => b.classList.remove("correct","wrong"));
+}
+
+function assignPuzzle(missionId){
+  if(!puzzleState || puzzleState.locked) return;
+  const current = puzzleState.cards[puzzleState.index];
+  const bucketEl = document.querySelector(`#puzzleBuckets .bucket[data-mission="${missionId}"]`);
+  if(!bucketEl) return;
+
+  if(missionId === current.missionId){
+    puzzleState.locked = true;
+    bucketEl.classList.add("correct");
+    try{ navigator.vibrate && navigator.vibrate(100); }catch(e){}
+    document.getElementById("puzzleCard").classList.add("leaving");
+    setTimeout(()=>{
+      puzzleState.index++;
+      if(puzzleState.index >= puzzleState.cards.length){
+        finishPuzzle();
+      } else {
+        renderPuzzleCard();
+      }
+    }, 480);
+  } else {
+    bucketEl.classList.add("wrong");
+    try{ navigator.vibrate && navigator.vibrate([50,50,50]); }catch(e){}
+    setTimeout(()=> bucketEl.classList.remove("wrong"), 350);
+  }
+}
+
+function finishPuzzle(){
+  const earned = 100;
+  const before = puzzleState.xpBefore;
+  const oldLevel = state.level;
+  state.xp += earned;
+  const newLevel = Math.max(1, Math.ceil(state.xp / 500));
+  const levelUp = newLevel > oldLevel;
+  state.level = newLevel;
+  saveState();
+  syncXpToServer(earned, "puzzle-" + puzzleState.track);
+
+  document.getElementById("pzXpBefore").textContent = before;
+  document.getElementById("pzXpAfter").textContent = state.xp;
+  go("puzzleResult");
+  runConfettiPuzzle();
+  if(levelUp){
+    setTimeout(()=>toast("🎉 Level Up! Du bist jetzt Level " + newLevel), 700);
+  }
+  puzzleState = null;
+}
+
+function exitPuzzle(){ puzzleState = null; go("home"); }
+
+function runConfettiPuzzle(){
+  const canvas = document.getElementById("pzConfetti");
+  if(!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  const colors = ["#00E5FF","#FFFFFF","#00838F","#00E5FF","#FFFFFF"];
+  const parts = [];
+  for(let i=0;i<80;i++){
+    parts.push({ x: Math.random()*W, y: -20 - Math.random()*100, vx: (Math.random()-0.5)*3, vy: 2 + Math.random()*3, w: 5 + Math.random()*6, h: 8 + Math.random()*8, c: colors[Math.floor(Math.random()*colors.length)], r: Math.random()*Math.PI, vr: (Math.random()-0.5)*0.2 });
+  }
+  const t0 = performance.now();
+  function frame(t){
+    const elapsed = t - t0;
+    ctx.clearRect(0,0,W,H);
+    parts.forEach(p=>{
+      p.x += p.vx; p.y += p.vy; p.r += p.vr; p.vy += 0.03;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h); ctx.restore();
+    });
+    if(elapsed < 2200){ requestAnimationFrame(frame); } else { ctx.clearRect(0,0,W,H); }
+  }
+  requestAnimationFrame(frame);
+}
 
 /* ============================================================
    BATTLE MODE JAVASCRIPT
@@ -1858,6 +2257,7 @@ function finishBattle() {
   const levelUp = newLevel > oldLevel;
   state.level = newLevel;
   saveState();
+  if(earnedXp > 0) syncXpToServer(earnedXp, "battle-" + Date.now());
 
   // Result UI befüllen
   document.getElementById("btTrophyIcon").textContent = trophy;
