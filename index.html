@@ -462,6 +462,10 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
         </div>
 
         <div class="auth-offline">
+          <div class="field" style="text-align:left;margin-bottom:10px">
+            <label for="localName">Dein Name für den lokalen Test</label>
+            <input id="localName" type="text" placeholder="Michael" autocomplete="off">
+          </div>
           <a onclick="skipAuth()">Ohne Konto lokal testen →</a>
         </div>
       </div>
@@ -675,11 +679,11 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
           <a onclick="go('trackPicker')">Wechseln</a>
         </div>
 
-        <div class="chips">
-          <div class="chip active">Empfohlen</div>
-          <div class="chip" onclick="toast('Kommt in Stufe 2 🚀')">Neu</div>
-          <div class="chip" onclick="toast('Kommt in Stufe 2 🚀')">Laufend</div>
-          <div class="chip" onclick="toast('Kommt in Stufe 2 🚀')">Abgeschlossen</div>
+        <div class="chips" id="missionChips">
+          <div class="chip active" data-filter="empfohlen" onclick="filterMissions('empfohlen')">Empfohlen</div>
+          <div class="chip" data-filter="neu" onclick="filterMissions('neu')">Neu</div>
+          <div class="chip" data-filter="laufend" onclick="filterMissions('laufend')">Laufend</div>
+          <div class="chip" data-filter="abgeschlossen" onclick="filterMissions('abgeschlossen')">Abgeschlossen</div>
         </div>
 
         <div class="mission-list" id="missionList"></div>
@@ -1197,7 +1201,7 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
    ============================================================ */
 
 /* -------- STATE -------- */
-const DEFAULT_STATE = { name:"Michael", level:7, xp:2450, streak:12, track:null, completedMissions:[], answers:[] };
+const DEFAULT_STATE = { name:"Michael", level:7, xp:2450, streak:12, track:null, completedMissions:[], answers:[], missionProgress:{} };
 let state = loadState();
 let pendingTrack = null;
 
@@ -1269,6 +1273,8 @@ function renderAuthMode(){
   document.getElementById("authSubmitBtn").textContent = isLogin ? "ANMELDEN" : "KONTO ANLEGEN";
   document.getElementById("authSwitchText").textContent = isLogin ? "Noch kein Konto?" : "Schon ein Konto?";
   document.getElementById("authSwitchLink").textContent = isLogin ? "Registrieren" : "Anmelden";
+  const localNameInput = document.getElementById("localName");
+  if(localNameInput) localNameInput.value = (state.name && state.name !== "Michael") ? state.name : "";
   hideAuthError();
 }
 function showAuthError(msg){
@@ -1316,6 +1322,10 @@ async function submitAuth(){
 }
 
 function skipAuth(){
+  const nameInput = document.getElementById("localName");
+  const typedName = nameInput ? nameInput.value.trim() : "";
+  if(typedName) state.name = typedName;
+  saveState();
   go(state.track ? "home" : "trackPicker");
 }
 
@@ -1577,28 +1587,81 @@ function renderHome(){
 }
 
 /* -------- MISSIONS -------- */
+/* -------- MISSIONEN: echter Fortschritt + Filter -------- */
+let missionFilter = "empfohlen";
+
+function getMissionProgress(missionId){
+  if(state.completedMissions.find(c=>c.id===missionId)) return 100;
+  const partial = state.missionProgress && state.missionProgress[missionId];
+  if(partial && partial.total > 0) return Math.round((partial.answered / partial.total) * 100);
+  return 0;
+}
+function getMissionStatus(missionId){
+  const p = getMissionProgress(missionId);
+  if(p >= 100) return "done";
+  if(p > 0) return "ongoing";
+  return "new";
+}
+
+function filterMissions(filter){
+  missionFilter = filter;
+  document.querySelectorAll('#missionChips .chip').forEach(c => c.classList.toggle('active', c.dataset.filter === filter));
+  renderMissions();
+}
+
 function renderMissions(){
   const list = document.getElementById("missionList");
   const track = state.track || "sales";
   document.getElementById("trackHintEmj").textContent = TRACKS[track].emj;
   document.getElementById("trackHintName").textContent = TRACKS[track].name;
-  const filtered = MISSIONS.filter(m=>m.track === track);
-  if(filtered.length === 0){
+
+  const trackMissions = MISSIONS.filter(m=>m.track === track);
+  if(trackMissions.length === 0){
     list.innerHTML = '<div class="empty-state">Keine Missionen in diesem Track.</div>';
     return;
   }
-  list.innerHTML = filtered.map(m=>`
+
+  let filtered;
+  const emptyText = {
+    neu: "Alles gestartet oder abgeschlossen — keine neuen Missionen mehr in diesem Track.",
+    laufend: "Noch keine begonnene Mission. Starte eine, um hier weiterzumachen.",
+    abgeschlossen: "Noch keine Mission abgeschlossen. Leg direkt los!",
+    empfohlen: "Alles in diesem Track abgeschlossen — stark!"
+  };
+
+  if(missionFilter === "neu"){
+    filtered = trackMissions.filter(m => getMissionStatus(m.id) === "new");
+  } else if(missionFilter === "laufend"){
+    filtered = trackMissions.filter(m => getMissionStatus(m.id) === "ongoing");
+  } else if(missionFilter === "abgeschlossen"){
+    filtered = trackMissions.filter(m => getMissionStatus(m.id) === "done");
+  } else {
+    // Empfohlen: alles Unerledigte, begonnene zuerst (dort weitermachen, wo aufgehört wurde)
+    filtered = trackMissions
+      .filter(m => getMissionStatus(m.id) !== "done")
+      .sort((a,b) => (getMissionStatus(a.id) === "ongoing" ? -1 : 0) - (getMissionStatus(b.id) === "ongoing" ? -1 : 0));
+  }
+
+  if(filtered.length === 0){
+    list.innerHTML = `<div class="empty-state">${emptyText[missionFilter]}</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(m=>{
+    const progress = getMissionProgress(m.id);
+    const status = getMissionStatus(m.id);
+    return `
     <div class="mission" onclick="startQuiz('${m.id}')">
       <div class="mission-icon">${ICN[m.iconType]||"⭐"}</div>
       <div class="mission-body">
         <h4>${m.title}</h4>
         <p>${m.subtitle}</p>
-        <div class="progress"><i style="width:${m.progress}%"></i></div>
-        <div class="meta"><span>Fortschritt</span><span class="pct">${m.progress}%</span></div>
+        <div class="progress"><i style="width:${progress}%"></i></div>
+        <div class="meta"><span>${status === "done" ? "✓ Abgeschlossen" : "Fortschritt"}</span><span class="pct">${progress}%</span></div>
       </div>
       <div class="mission-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
     </div>
-  `).join("");
+  `;}).join("");
 }
 
 /* -------- QUIZ -------- */
@@ -1654,6 +1717,8 @@ function answer(i){
   }
   document.getElementById("quizBar").style.width = ((quizState.index + 1) / quizState.mission.questions.length * 100) + "%";
   document.getElementById("nextBtn").classList.add("enabled");
+  state.missionProgress[quizState.missionId] = { answered: quizState.index + 1, total: quizState.mission.questions.length };
+  saveState();
 }
 function showFeedback(ok){
   const fb = document.getElementById("feedback");
@@ -1698,6 +1763,7 @@ function finishQuiz(){
   if(!state.completedMissions.find(c=>c.id===quizState.missionId)){
     state.completedMissions.push({ id:quizState.missionId, date:new Date().toISOString(), score:quizState.correctCount });
   }
+  delete state.missionProgress[quizState.missionId];
   saveState();
   if(earned > 0) syncXpToServer(earned, quizState.missionId);
   document.getElementById("scoreN").textContent = quizState.correctCount;
