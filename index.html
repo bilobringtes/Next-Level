@@ -163,6 +163,7 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 /* HEADER */
 .header{display:flex;align-items:center;gap:10px;padding:4px 2px 14px}
 .header .back{width:38px;height:38px;border-radius:999px;background:var(--card-2);display:flex;align-items:center;justify-content:center;border:1px solid var(--stroke);cursor:pointer;color:var(--white);flex-shrink:0;transition:transform .15s ease}
+#trackBackBtn{width:38px;height:38px;border-radius:999px;background:var(--card-2);align-items:center;justify-content:center;border:1px solid var(--stroke);cursor:pointer;color:var(--white)}
 .header .back:active{transform:scale(0.92)}
 .header h2{font-family:var(--font-head);font-weight:700;font-size:18px;letter-spacing:0.4px;margin:0;flex:1}
 .header .right-icon{width:38px;height:38px;border-radius:999px;background:var(--card-2);display:flex;align-items:center;justify-content:center;border:1px solid var(--stroke);color:var(--white);cursor:pointer}
@@ -265,6 +266,14 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 .badge-item.unlocked .emj{filter:none;opacity:1}
 .badge-item .bname{font-size:9.5px;font-weight:600;color:var(--muted);line-height:1.25;display:block}
 .badge-item.unlocked .bname{color:var(--white)}
+
+.msg-item{background:var(--card-2);border:1px solid var(--stroke);border-radius:16px;padding:16px;margin-bottom:10px}
+.msg-item.urgent{border-color:rgba(230,0,0,0.5);background:linear-gradient(160deg,rgba(230,0,0,0.12),var(--card-2))}
+.msg-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.msg-urgent-tag{font-size:9.5px;font-weight:700;letter-spacing:0.4px;color:var(--red);background:rgba(230,0,0,0.15);border:1px solid rgba(230,0,0,0.4);padding:2px 8px;border-radius:999px;flex-shrink:0}
+.msg-title{font-family:var(--font-head);font-weight:700;font-size:15px;flex:1}
+.msg-date{font-size:11px;color:var(--muted-2);margin-bottom:8px}
+.msg-body{font-size:13.5px;color:var(--muted);line-height:1.5}
 .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--red-2),var(--red));box-shadow:0 0 8px rgba(230,0,0,0.5);border-radius:999px}
 .chart-card{margin-top:16px;background:var(--card-2);border-radius:20px;padding:16px;border:1px solid var(--stroke)}
 .chart-card svg{width:100%;height:140px;display:block;margin-top:8px}
@@ -391,7 +400,7 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 .auth-status-pill i{width:6px;height:6px;border-radius:999px;background:var(--muted-2);flex-shrink:0}
 .auth-status-pill.online i{background:var(--success);box-shadow:0 0 6px var(--success)}
 .auth-status-pill.offline i{background:var(--warning)}
-#auth .copyright{pointer-events:auto;cursor:default}
+#auth .copyright,#profile .copyright{pointer-events:auto;cursor:default}
 
 /* ============================================================
    ADMIN-MODUS (versteckt)
@@ -519,6 +528,17 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
         </div>
         <button class="admin-btn small danger" onclick="adminResetAll()">Alles zurücksetzen (State + Login)</button>
 
+        <div id="adminMsgSection" style="display:none">
+          <label class="admin-label">Nachricht an alle Nutzer verschicken</label>
+          <input id="adminMsgTitle" type="text" class="admin-input" placeholder="Titel">
+          <textarea id="adminMsgBody" class="admin-input" style="margin-top:6px;min-height:70px;resize:vertical" placeholder="Text der Nachricht"></textarea>
+          <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:11px;color:#9fd8b8">
+            <input id="adminMsgUrgent" type="checkbox" style="width:auto">
+            Als wichtig markieren (wird hervorgehoben)
+          </label>
+          <button class="admin-btn" onclick="adminSendMessage()">Nachricht verschicken</button>
+        </div>
+
         <label class="admin-label">Aktueller State</label>
         <pre id="adminStateJson" class="admin-json"></pre>
       </div>
@@ -535,6 +555,9 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
           <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><rect x="0.5" y="0.5" width="18" height="9" rx="2.5" stroke="currentColor" stroke-opacity=".6"/><rect x="2" y="2" width="14" height="6" rx="1.2" fill="currentColor"/><rect x="19.5" y="3.5" width="1.5" height="3" rx=".5" fill="currentColor" opacity=".6"/></svg>
         </span>
       </div>
+      <button class="back" id="trackBackBtn" onclick="go('home')" aria-label="Zurück" style="display:none;position:absolute;top:56px;left:18px;z-index:2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
       <div class="content">
         <div class="tp-eyebrow">Dein Karrierepfad</div>
         <h2 class="tp-title">Wähle deinen Track.</h2>
@@ -587,9 +610,9 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
       <div class="screen-scroll">
         <div class="top-bar">
           <div class="avatar" id="topBarAvatar" aria-label="Profil" onclick="go('profile')" style="cursor:pointer">M</div>
-          <button class="icon-btn" onclick="toast('Kommt in Stufe 2 🚀')" aria-label="Benachrichtigungen">
+          <button class="icon-btn" id="bellBtn" onclick="go('messages')" aria-label="Nachrichten">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-            <span class="dot-badge"></span>
+            <span class="dot-badge" id="bellDot" style="display:none"></span>
           </button>
         </div>
 
@@ -1047,7 +1070,7 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
         <div class="tab active" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profil</span></div>
       </nav>
 
-      <div class="copyright">© 2026 Bülent Uslu · Konzeptvorschau</div>
+      <div class="copyright" onclick="handleAdminTap()" style="user-select:none">© 2026 Bülent Uslu · Konzeptvorschau</div>
     </section>
 
     <!-- =========================================
@@ -1216,6 +1239,11 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 
         <!-- Die 3 Ablage-Eimer (Buckets) -->
         <div class="buckets" id="puzzleBuckets"></div>
+
+        <div class="feedback" id="puzzleFeedback">
+          <div class="fb-icon" id="puzzleFbIcon">✓</div>
+          <div><h5 id="puzzleFbTitle">Richtig!</h5><p id="puzzleFbText"></p></div>
+        </div>
       </div>
 
       <div class="copyright">© 2026 Bülent Uslu · Konzeptvorschau</div>
@@ -1248,6 +1276,29 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
       <div class="copyright">© 2026 Bülent Uslu · Konzeptvorschau</div>
     </section>
 
+    <!-- =========================================
+         NACHRICHTEN
+         ========================================= -->
+    <section class="screen" id="messages">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span class="right">
+          <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 5.5C3.5 3 6 1.5 8 1.5s4.5 1.5 7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M3.5 7C5 5.5 6.5 4.7 8 4.7s3 .8 4.5 2.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg>
+          <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><rect x="0.5" y="0.5" width="18" height="9" rx="2.5" stroke="currentColor" stroke-opacity=".6"/><rect x="2" y="2" width="14" height="6" rx="1.2" fill="currentColor"/><rect x="19.5" y="3.5" width="1.5" height="3" rx=".5" fill="currentColor" opacity=".6"/></svg>
+        </span>
+      </div>
+      <div class="header">
+        <button class="back" onclick="go('home')" aria-label="Zurück">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <h2>NACHRICHTEN</h2>
+      </div>
+      <div class="screen-scroll" style="padding-bottom:40px">
+        <div id="messagesList"></div>
+      </div>
+      <div class="copyright">© 2026 Bülent Uslu · Konzeptvorschau</div>
+    </section>
+
     <div id="toast-wrap"></div>
   </div>
 </div>
@@ -1259,7 +1310,7 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
    ============================================================ */
 
 /* -------- STATE -------- */
-const DEFAULT_STATE = { name:"Michael", level:7, xp:2450, streak:12, track:null, completedMissions:[], answers:[], missionProgress:{}, xpHistory:[], lastActiveDate:null, battlesWon:0, puzzlesCompleted:0 };
+const DEFAULT_STATE = { name:"Michael", level:7, xp:2450, streak:12, track:null, completedMissions:[], answers:[], missionProgress:{}, xpHistory:[], lastActiveDate:null, battlesWon:0, puzzlesCompleted:0, isAdmin:false, lastSeenMessageId:null };
 let state = loadState();
 let pendingTrack = null;
 
@@ -1370,6 +1421,7 @@ async function submitAuth(){
     serverOnline = true;
 
     state.name = data.user.display_name || email.split("@")[0];
+    state.isAdmin = !!data.user.is_admin;
     await syncProgressFromServer();
     saveState();
     go(state.track ? "home" : "trackPicker");
@@ -1415,6 +1467,95 @@ async function syncXpToServer(amount, moduleId){
   }
 }
 
+/* -------- NACHRICHTEN -------- */
+let cachedMessages = [];
+
+function escHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+}
+
+async function checkForNewMessages(){
+  if(!authToken){ updateBellDot(false); return; }
+  try{
+    const data = await apiCall("/messages");
+    cachedMessages = data;
+    serverOnline = true;
+    const newest = data[0];
+    updateBellDot(!!newest && newest.id !== state.lastSeenMessageId);
+  }catch(e){
+    serverOnline = false;
+    updateBellDot(false);
+  }
+}
+
+function updateBellDot(show){
+  const dot = document.getElementById("bellDot");
+  if(dot) dot.style.display = show ? "block" : "none";
+}
+
+function formatMessageDate(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString("de-DE", { day:"2-digit", month:"2-digit", year:"numeric" }) + " · " + d.toLocaleTimeString("de-DE", { hour:"2-digit", minute:"2-digit" });
+}
+
+async function loadAndRenderMessages(){
+  const list = document.getElementById("messagesList");
+
+  if(!authToken){
+    list.innerHTML = '<div class="empty-state">Melde dich mit einem echten Konto an, um Nachrichten zu sehen.</div>';
+    return;
+  }
+
+  list.innerHTML = '<div class="empty-state">Wird geladen…</div>';
+
+  try{
+    const data = await apiCall("/messages");
+    cachedMessages = data;
+    serverOnline = true;
+
+    if(data.length === 0){
+      list.innerHTML = '<div class="empty-state">Noch keine Nachrichten.</div>';
+    } else {
+      list.innerHTML = data.map(m => `
+        <div class="msg-item ${m.urgent ? "urgent" : ""}">
+          <div class="msg-top">
+            ${m.urgent ? '<span class="msg-urgent-tag">WICHTIG</span>' : ""}
+            <span class="msg-title">${escHtml(m.title)}</span>
+          </div>
+          <div class="msg-date">${formatMessageDate(m.created_at)}</div>
+          <div class="msg-body">${escHtml(m.body)}</div>
+        </div>
+      `).join("");
+
+      state.lastSeenMessageId = data[0].id;
+      saveState();
+      updateBellDot(false);
+    }
+  }catch(e){
+    serverOnline = false;
+    list.innerHTML = '<div class="empty-state">Server nicht erreichbar – Nachrichten können gerade nicht geladen werden.</div>';
+  }
+}
+
+async function adminSendMessage(){
+  const title = document.getElementById("adminMsgTitle").value.trim();
+  const body = document.getElementById("adminMsgBody").value.trim();
+  const urgent = document.getElementById("adminMsgUrgent").checked;
+
+  if(!title || !body){ toast("Titel und Text ausfüllen"); return; }
+  if(!authToken){ toast("Dafür musst du mit einem echten Konto angemeldet sein"); return; }
+
+  try{
+    await apiCall("/messages", { method:"POST", body: JSON.stringify({ title, body, urgent }) });
+    toast("Nachricht verschickt");
+    document.getElementById("adminMsgTitle").value = "";
+    document.getElementById("adminMsgBody").value = "";
+    document.getElementById("adminMsgUrgent").checked = false;
+  }catch(e){
+    toast("Fehlgeschlagen: " + e.message);
+  }
+}
+
 function logout(){
   if(!confirm("Wirklich abmelden?")) return;
   authToken = null;
@@ -1453,6 +1594,7 @@ function toggleAdminPanel(){
   const willShow = panel.classList.contains("hidden");
   if(willShow){
     document.getElementById("adminApiUrl").value = API_BASE;
+    document.getElementById("adminMsgSection").style.display = state.isAdmin ? "block" : "none";
     renderAdminState();
   }
   panel.classList.toggle("hidden");
@@ -1662,12 +1804,13 @@ function go(id){
   currentScreen = id;
   const sc = to.querySelector(".screen-scroll");
   if(sc) sc.scrollTop = 0;
-  if(id==="home") renderHome();
+  if(id==="home"){ renderHome(); checkForNewMessages(); }
   if(id==="missions") renderMissions();
   if(id==="progress") renderProgress();
   if(id==="leaderboard") renderLeaderboard("track");
   if(id==="profile") renderProfile();
   if(id==="trackPicker") renderTrackPicker();
+  if(id==="messages") loadAndRenderMessages();
 }
 
 /* -------- TRACK PICKER -------- */
@@ -1677,6 +1820,7 @@ function renderTrackPicker(){
     el.classList.toggle("selected", el.dataset.track === pendingTrack);
   });
   document.getElementById("trackNextBtn").classList.toggle("enabled", !!pendingTrack);
+  document.getElementById("trackBackBtn").style.display = state.track ? "flex" : "none";
 }
 function selectTrack(track){
   pendingTrack = track;
@@ -2271,6 +2415,19 @@ function renderPuzzleCard(){
   cardEl.textContent = cards[index].text;
   puzzleState.locked = false;
   document.querySelectorAll("#puzzleBuckets .bucket").forEach(b => b.classList.remove("correct","wrong"));
+  document.getElementById("puzzleFeedback").classList.remove("show");
+}
+
+function showPuzzleFeedback(ok){
+  const fb = document.getElementById("puzzleFeedback");
+  fb.className = "feedback show " + (ok ? "ok" : "bad");
+  document.getElementById("puzzleFbTitle").textContent = ok ? "Richtig!" : "Nicht ganz";
+  document.getElementById("puzzleFbText").textContent = ok
+    ? "Weiter zur nächsten Kachel."
+    : "Versuch's nochmal – ordne die Kachel einem anderen Bereich zu.";
+  document.getElementById("puzzleFbIcon").innerHTML = ok
+    ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
+    : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
 }
 
 function assignPuzzle(missionId){
@@ -2282,6 +2439,7 @@ function assignPuzzle(missionId){
   if(missionId === current.missionId){
     puzzleState.locked = true;
     bucketEl.classList.add("correct");
+    showPuzzleFeedback(true);
     try{ navigator.vibrate && navigator.vibrate(100); }catch(e){}
     document.getElementById("puzzleCard").classList.add("leaving");
     setTimeout(()=>{
@@ -2291,11 +2449,15 @@ function assignPuzzle(missionId){
       } else {
         renderPuzzleCard();
       }
-    }, 480);
+    }, 900);
   } else {
     bucketEl.classList.add("wrong");
+    showPuzzleFeedback(false);
     try{ navigator.vibrate && navigator.vibrate([50,50,50]); }catch(e){}
-    setTimeout(()=> bucketEl.classList.remove("wrong"), 350);
+    setTimeout(()=>{
+      bucketEl.classList.remove("wrong");
+      document.getElementById("puzzleFeedback").classList.remove("show");
+    }, 1400);
   }
 }
 
