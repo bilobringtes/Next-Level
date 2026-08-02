@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#000000">
 <meta name="author" content="Bülent Uslu">
 <meta name="copyright" content="© 2026 Bülent Uslu. Alle Rechte vorbehalten.">
-<meta name="description" content="Next Level — Die Lern-App, die sich anfühlt wie ein Spiel. Ein Konzept von Bülent Uslu.">
+<meta name="description" content="Next Level — Gamifizierte Trainingsplattform. Ein Konzept von Bülent Uslu.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Next Level">
@@ -248,6 +248,12 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 .streak-card .streak-num{font-family:var(--font-head);font-weight:700;font-size:72px;line-height:1;color:#fff;letter-spacing:-0.03em;text-shadow:0 4px 20px rgba(0,0,0,0.4)}
 .streak-card .streak-sub{font-family:var(--font-head);font-weight:600;font-size:15px;color:#fff;margin-top:4px;letter-spacing:0.3px}
 .streak-card .streak-hint{font-size:11.5px;color:rgba(255,255,255,0.75);margin-top:8px;font-weight:500}
+.streak-week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:16px;position:relative;z-index:1}
+.streak-day{display:flex;flex-direction:column;align-items:center;gap:4px}
+.streak-day .d-label{font-size:8.5px;color:rgba(255,255,255,0.6);font-family:var(--font-head);font-weight:600;letter-spacing:0.3px;text-transform:uppercase}
+.streak-day .d-dot{width:26px;height:26px;border-radius:999px;background:rgba(0,0,0,0.2);border:1.5px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:12px}
+.streak-day.active .d-dot{background:#fff;border-color:#fff;color:var(--red)}
+.streak-day.today .d-dot{box-shadow:0 0 0 2px rgba(255,255,255,0.6)}
 .kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
 .kpi{background:var(--card-2);border-radius:18px;padding:14px 8px;text-align:center;border:1px solid var(--stroke)}
 .kpi .n{font-family:var(--font-head);font-weight:700;font-size:26px;color:var(--red);line-height:1;letter-spacing:-0.02em}
@@ -435,6 +441,100 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 .bucket.correct{border-color:var(--success);background:rgba(34,197,94,0.15)}
 .bucket.wrong{border-color:var(--red);background:rgba(230,0,0,0.15);animation:bucketShake .35s ease}
 @keyframes bucketShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+/* ============================================================
+   JACKPOT XP TAG
+   ============================================================ */
+.jackpot-tag{display:inline-flex;align-items:center;gap:5px;margin-top:10px;padding:6px 14px;border-radius:999px;background:linear-gradient(135deg,#F5C445,#B8860B);color:#1a1200;font-family:var(--font-head);font-weight:700;font-size:11.5px;letter-spacing:0.5px;box-shadow:0 0 18px rgba(245,196,69,0.55);animation:jackpotPop .5s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes jackpotPop{0%{opacity:0;transform:scale(0.5)}70%{transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+.bonus-tag{display:inline-flex;align-items:center;gap:5px;margin-top:10px;padding:6px 14px;border-radius:999px;background:rgba(245,196,69,0.14);border:1px solid rgba(245,196,69,0.4);color:#F5C445;font-family:var(--font-head);font-weight:700;font-size:11.5px;letter-spacing:0.4px}
+
+/* ============================================================
+   WEEKLY EVENT BANNER
+   ============================================================ */
+.weekly-banner{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,rgba(245,196,69,0.16),rgba(184,134,11,0.05));border:1px solid rgba(245,196,69,0.4);margin-bottom:14px;cursor:default}
+.weekly-banner .w-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#F5C445,#B8860B);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;box-shadow:0 0 14px rgba(245,196,69,0.4)}
+.weekly-banner .w-body{flex:1;min-width:0}
+.weekly-banner h5{margin:0;font-family:var(--font-head);font-weight:700;font-size:13px;color:#F5C445;letter-spacing:0.2px}
+.weekly-banner p{margin:2px 0 0;font-size:11px;color:var(--muted);line-height:1.3}
+
+/* ============================================================
+   CHASE CARD (Rang-Abstand)
+   ============================================================ */
+.chase-card{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;background:var(--card-2);border:1px solid var(--stroke);margin-bottom:14px;cursor:pointer}
+.chase-card .c-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,rgba(230,0,0,0.22),rgba(230,0,0,0.06));display:flex;align-items:center;justify-content:center;color:var(--red);flex-shrink:0;border:1px solid rgba(230,0,0,0.3)}
+.chase-card .c-body{flex:1;min-width:0}
+.chase-card h5{margin:0;font-family:var(--font-head);font-weight:700;font-size:13px}
+.chase-card p{margin:2px 0 0;font-size:11px;color:var(--muted)}
+.chase-card .c-arrow{color:var(--muted-2);flex-shrink:0}
+
+/* ============================================================
+   MISSIONS-SPERRE (Zeigarnik-Effekt)
+   ============================================================ */
+.mission.locked{opacity:0.5;cursor:default;pointer-events:none}
+.mission.locked .mission-icon{background:var(--card-3);color:var(--muted-2);border-color:var(--stroke)}
+.mission-lock-badge{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:999px;background:#0a0a0a;border:1px solid var(--stroke);display:flex;align-items:center;justify-content:center;color:var(--muted-2);flex-shrink:0}
+.mission{position:relative}
+
+/* ============================================================
+   SETTINGS (Einstellungen)
+   ============================================================ */
+.settings-section{background:var(--card-2);border-radius:18px;padding:6px 16px;border:1px solid var(--stroke);margin-bottom:16px}
+.settings-section .sec-title{font-family:var(--font-head);font-weight:600;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:14px 0 4px}
+.set-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--stroke-2)}
+.set-row:last-child{border-bottom:none}
+.set-row .s-label{flex:1;min-width:0}
+.set-row .s-label h5{margin:0;font-family:var(--font-head);font-weight:600;font-size:13.5px}
+.set-row .s-label p{margin:2px 0 0;font-size:11px;color:var(--muted-2)}
+.set-toggle{width:46px;height:27px;border-radius:999px;background:#0a0a0a;border:1px solid var(--stroke);position:relative;cursor:pointer;flex-shrink:0;transition:background .2s ease,border-color .2s ease}
+.set-toggle::after{content:"";position:absolute;top:2px;left:2px;width:21px;height:21px;border-radius:999px;background:var(--muted);transition:transform .2s cubic-bezier(.2,.8,.3,1.2),background .2s ease}
+.set-toggle.on{background:linear-gradient(135deg,var(--red),var(--red-2));border-color:var(--red)}
+.set-toggle.on::after{transform:translateX(19px);background:#fff}
+.set-range{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:999px;background:#0a0a0a;border:1px solid var(--stroke-2);outline:none}
+.set-range::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:999px;background:linear-gradient(135deg,var(--red),var(--red-2));box-shadow:var(--glow-soft);cursor:pointer;border:2px solid #fff}
+.set-range::-moz-range-thumb{width:20px;height:20px;border-radius:999px;background:linear-gradient(135deg,var(--red),var(--red-2));box-shadow:var(--glow-soft);cursor:pointer;border:2px solid #fff}
+.set-range-row{padding:13px 0}
+.set-range-row .top{display:flex;justify-content:space-between;margin-bottom:10px}
+.set-range-row .top h5{margin:0;font-family:var(--font-head);font-weight:600;font-size:13.5px}
+.set-range-row .top span{font-family:var(--font-head);font-weight:700;font-size:12px;color:var(--red)}
+.set-textarea{width:100%;background:#0a0a0a;border:1px solid var(--stroke);border-radius:12px;padding:12px;color:var(--white);font-family:var(--font-body);font-size:13px;resize:vertical;min-height:80px;margin-top:10px}
+.set-textarea::placeholder{color:var(--muted-2)}
+.set-send-btn{width:100%;padding:12px;margin-top:10px;background:var(--card-3);border:1px solid var(--stroke);border-radius:12px;color:var(--white);font-family:var(--font-head);font-weight:600;font-size:12.5px;cursor:pointer}
+.set-send-btn:active{transform:scale(0.98)}
+.legal-block{font-size:11.5px;color:var(--muted);line-height:1.6;padding:12px 0}
+.legal-block h5{font-family:var(--font-head);font-weight:700;font-size:12.5px;color:var(--white);margin:14px 0 5px}
+.legal-block h5:first-child{margin-top:0}
+
+/* ============================================================
+   BEFÖRDERUNGS-OVERLAY
+   ============================================================ */
+.promo-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:90;display:flex;align-items:center;justify-content:center;padding:24px}
+.promo-overlay.hidden{display:none}
+.promo-card{width:100%;max-width:340px;text-align:center;position:relative}
+.promo-badge{width:120px;height:120px;border-radius:999px;margin:0 auto 22px;background:radial-gradient(circle at 40% 30%,rgba(255,255,255,0.2),transparent 55%),linear-gradient(135deg,#F5C445,#B8860B);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(245,196,69,0.55),0 0 90px rgba(245,196,69,0.25);font-size:52px;position:relative;z-index:1}
+.promo-eyebrow{font-family:var(--font-head);font-weight:600;font-size:11px;letter-spacing:1.5px;color:#F5C445;text-transform:uppercase;position:relative;z-index:1}
+.promo-title{font-family:var(--font-head);font-weight:700;font-size:28px;color:#fff;margin:8px 0 4px;letter-spacing:-0.01em;position:relative;z-index:1}
+.promo-sub{font-size:13.5px;color:var(--muted);margin-bottom:26px;position:relative;z-index:1}
+.promo-btn{width:100%;padding:15px;border:0;border-radius:16px;background:linear-gradient(135deg,var(--red),var(--red-2));color:#fff;font-family:var(--font-head);font-weight:700;font-size:14px;letter-spacing:0.5px;cursor:pointer;box-shadow:var(--glow-soft);position:relative;z-index:1}
+.promo-btn:active{transform:scale(0.98)}
+
+/* ============================================================
+   AKTIVITÄTS-FEED
+   ============================================================ */
+.activity-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--stroke-2)}
+.activity-item:last-child{border-bottom:none}
+.activity-item .a-avatar{width:36px;height:36px;border-radius:999px;background:var(--card-3);border:1px solid var(--stroke);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-weight:700;font-size:13px;flex-shrink:0}
+.activity-item .a-body{flex:1;min-width:0;font-size:12.5px;color:var(--muted);line-height:1.4}
+.activity-item .a-body b{color:var(--white);font-weight:600}
+.activity-item .a-time{font-size:10.5px;color:var(--muted-2);flex-shrink:0}
+
+/* ============================================================
+   ADMIN ANALYTICS
+   ============================================================ */
+.admin-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.admin-stat{background:#081209;border:1px solid #1f3d2c;border-radius:8px;padding:9px 10px}
+.admin-stat .v{color:#3ddc84;font-weight:700;font-size:16px;font-family:ui-monospace,monospace}
+.admin-stat .l{color:#6f9481;font-size:9.5px;letter-spacing:0.3px;margin-top:2px;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -450,7 +550,6 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
       <div>
         <div class="brand">NEXT LEVEL<span class="dot">.</span></div>
         <div class="tag">LERNEN. SPIELEN. AUFSTEIGEN.</div>
-        <div class="leitidee"><b>Die Lern-App,</b> die sich anfühlt wie ein Spiel.</div>
       </div>
       <div class="credit">Ein Konzept von <strong>Bülent Uslu</strong></div>
     </section>
@@ -539,6 +638,9 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
           <button class="admin-btn" onclick="adminSendMessage()">Nachricht verschicken</button>
         </div>
 
+        <label class="admin-label">Analytics (lokal erfasst)</label>
+        <div id="adminAnalytics"></div>
+
         <label class="admin-label">Aktueller State</label>
         <pre id="adminStateJson" class="admin-json"></pre>
       </div>
@@ -591,7 +693,6 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
         </div>
       </div>
 
-      <button class="next-btn" id="trackNextBtn" onclick="confirmTrack()">WEITER</button>
       <div class="copyright">© 2026 Bülent Uslu · Konzeptvorschau</div>
     </section>
 
@@ -622,7 +723,6 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
           </svg>
           <h1>NEXT LEVEL</h1>
           <div class="sub">LERNEN. SPIELEN. AUFSTEIGEN.</div>
-          <div class="leitidee-tag">Die Lern-App, die sich anfühlt wie <em>ein Spiel</em>.</div>
         </div>
 
         <div class="card card-glow hello-card">
@@ -653,6 +753,25 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
             <span>Fortschritt zum Level <span id="nextLvl">8</span></span>
             <span class="pct" id="xpPct">72%</span>
           </div>
+        </div>
+
+        <div class="weekly-banner" id="weeklyBanner" style="display:none">
+          <div class="w-icon">⚡</div>
+          <div class="w-body">
+            <h5>Weekly Event: Doppelte XP!</h5>
+            <p>Heute zählt jede Mission, jedes Battle und jedes Puzzle doppelt.</p>
+          </div>
+        </div>
+
+        <div class="chase-card" id="chaseCard" onclick="go('leaderboard')" style="display:none">
+          <div class="c-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+          </div>
+          <div class="c-body">
+            <h5 id="chaseTitle">Nur noch ein Stück</h5>
+            <p id="chaseSub">Lädt…</p>
+          </div>
+          <div class="c-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
         </div>
 
         <div class="section-title">Deine Welt</div>
@@ -843,6 +962,7 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
           <h1>GESCHAFFT!</h1>
           <div class="score"><span id="scoreN">0</span> von <span id="scoreTotal">5</span> richtig</div>
           <div class="result-xp">+<span id="resultXp">0</span> XP</div>
+          <div id="resultRewardTag"></div>
           <div class="total">Gesamt: <b><span id="xpBefore">2450</span></b> → <b><span id="xpAfter">2450</span> XP</b></div>
         </div>
       </div>
@@ -875,13 +995,14 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
           <div class="chip active" data-lb="track">Mein Track</div>
           <div class="chip" data-lb="all">Alle</div>
           <div class="chip" data-lb="week">Diese Woche</div>
-          <div class="chip" onclick="toast('Kommt in Stufe 2 🚀')">Filiale</div>
+          <div class="chip" data-lb="filiale">Meine Filiale</div>
+          <div class="chip" data-lb="activity">Aktivität</div>
         </div>
 
         <!-- Podium -->
         <div class="podium" id="podium"></div>
 
-        <div class="section-row"><div class="section-title">Weitere Ränge</div><a onclick="toast('Volle Liste in Stufe 2 🚀')">Alle anzeigen</a></div>
+        <div class="section-row"><div class="section-title" id="lbSectionTitle">Weitere Ränge</div><a id="lbToggleAll" onclick="toggleLbExpand()" style="display:none">Alle anzeigen</a></div>
         <div class="rank-list" id="rankList"></div>
       </div>
 
@@ -920,6 +1041,7 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
           <div class="streak-num" id="streakNum">12</div>
           <div class="streak-sub">Tage in Folge 🔥</div>
           <div class="streak-hint">Halte deinen Streak am Leben — lerne 1 Tag/Tag</div>
+          <div class="streak-week" id="streakWeek"></div>
         </div>
 
         <div class="kpi-row">
@@ -998,7 +1120,7 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           </button>
           <h2>PROFIL</h2>
-          <div class="right-icon" onclick="toast('Einstellungen in Stufe 2 🚀')">
+          <div class="right-icon" onclick="go('settings')">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
           </div>
         </div>
@@ -1123,6 +1245,8 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
             <h4 style="margin:0;color:var(--success);font-family:var(--font-head);font-size:18px">Gegner gefunden!</h4>
             <p style="margin:4px 0 0;font-size:13px;color:var(--muted)" id="btOppDetail">Sarah K. aus Filiale Hamburg fordert dich heraus.</p>
           </div>
+          <div style="background:var(--card-2);border:1px solid var(--stroke);border-radius:12px;padding:10px 12px;margin-bottom:14px;font-size:11.5px;color:var(--muted)" id="btBilanzText">Bilanz wird geladen…</div>
+          <div style="text-align:center;font-size:10.5px;color:var(--muted-2);margin:-6px 0 16px;letter-spacing:0.4px;text-transform:uppercase" id="btDifficultyLabel">Gegner-Level: Ausgewogen</div>
           <button class="next-btn enabled" style="position:static;width:100%" onclick="startBattle()">BATTLE STARTEN ⚔️</button>
         </div>
       </div>
@@ -1267,7 +1391,8 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
           <div class="trophy" style="font-size:44px;background:linear-gradient(135deg,#00E5FF,#00838F)">🧩</div>
           <h1>PUZZLE GELÖST!</h1>
           <div class="score">Du hast alle 5 Kacheln erfolgreich sortiert!</div>
-          <div class="result-xp">+100 XP</div>
+          <div class="result-xp">+<span id="pzXpEarned">100</span> XP</div>
+          <div id="pzRewardTag"></div>
           <div class="total">Gesamt: <b><span id="pzXpBefore">2450</span></b> → <b><span id="pzXpAfter">2550</span> XP</b></div>
         </div>
       </div>
@@ -1299,6 +1424,78 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
       <div class="copyright">© 2026 Bülent Uslu · Konzeptvorschau</div>
     </section>
 
+    <!-- =========================================
+         EINSTELLUNGEN
+         ========================================= -->
+    <section class="screen" id="settings">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span class="right">
+          <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 5.5C3.5 3 6 1.5 8 1.5s4.5 1.5 7 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M3.5 7C5 5.5 6.5 4.7 8 4.7s3 .8 4.5 2.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="9" r="1" fill="currentColor"/></svg>
+          <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><rect x="0.5" y="0.5" width="18" height="9" rx="2.5" stroke="currentColor" stroke-opacity=".6"/><rect x="2" y="2" width="14" height="6" rx="1.2" fill="currentColor"/><rect x="19.5" y="3.5" width="1.5" height="3" rx=".5" fill="currentColor" opacity=".6"/></svg>
+        </span>
+      </div>
+      <div class="header">
+        <button class="back" onclick="go('profile')" aria-label="Zurück">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <h2>EINSTELLUNGEN</h2>
+      </div>
+
+      <div class="screen-scroll" style="padding-bottom:40px">
+        <div class="settings-section">
+          <div class="sec-title">Sound &amp; Haptik</div>
+          <div class="set-row">
+            <div class="s-label"><h5>Soundeffekte</h5><p>Töne bei richtigen/falschen Antworten</p></div>
+            <div class="set-toggle" id="soundToggle" onclick="toggleSetting('soundOn')"></div>
+          </div>
+          <div class="set-row">
+            <div class="s-label"><h5>Vibration</h5><p>Haptisches Feedback bei Interaktionen</p></div>
+            <div class="set-toggle" id="hapticToggle" onclick="toggleSetting('hapticOn')"></div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="sec-title">Anzeige</div>
+          <div class="set-range-row">
+            <div class="top"><h5>Helligkeit</h5><span id="brightnessVal">100%</span></div>
+            <input type="range" class="set-range" id="brightnessRange" min="60" max="140" value="100" oninput="updateBrightness(this.value)">
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="sec-title">Feedback an das Team</div>
+          <div style="padding-bottom:14px">
+            <p style="font-size:11.5px;color:var(--muted-2);margin:0">Was können wir an Next Level verbessern? Deine Nachricht geht direkt an das Projektteam.</p>
+            <textarea class="set-textarea" id="feedbackText" placeholder="Deine Rückmeldung..."></textarea>
+            <button class="set-send-btn" onclick="sendFeedback()">Feedback senden</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="sec-title">Rechtliches</div>
+          <div class="legal-block">
+            <h5>Datenschutz</h5>
+            <p>Next Level ist eine Konzeptvorschau. In dieser Phase werden Nutzungsdaten ausschließlich lokal auf deinem Gerät gespeichert (localStorage), sofern kein Server verbunden ist. Eine vollständige Datenschutzerklärung folgt mit dem produktiven Start.</p>
+            <h5>Nutzungsbedingungen</h5>
+            <p>Alle Inhalte dienen aktuell Demo- und Testzwecken. Missionen, Ranglisten und Namen sind teilweise Platzhalterdaten. Verbindliche Nutzungsbedingungen werden vor dem offiziellen Rollout ergänzt.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="copyright">© 2026 Bülent Uslu · Konzeptvorschau</div>
+    </section>
+
+    <div class="promo-overlay hidden" id="promoOverlay">
+      <div class="promo-card">
+        <div class="promo-badge" id="promoBadge">🚀</div>
+        <div class="promo-eyebrow">Beförderung</div>
+        <div class="promo-title" id="promoTitle">Senior Berater</div>
+        <div class="promo-sub" id="promoSub">Level 8 · Sales</div>
+        <button class="promo-btn" onclick="closePromotion()">WEITER SO!</button>
+      </div>
+    </div>
+
     <div id="toast-wrap"></div>
   </div>
 </div>
@@ -1310,7 +1507,79 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
    ============================================================ */
 
 /* -------- STATE -------- */
-const DEFAULT_STATE = { name:"Michael", level:7, xp:2450, streak:12, track:null, completedMissions:[], answers:[], missionProgress:{}, xpHistory:[], lastActiveDate:null, battlesWon:0, puzzlesCompleted:0, isAdmin:false, lastSeenMessageId:null };
+const DEFAULT_STATE = { name:"Michael", level:7, xp:2450, streak:12, track:null, completedMissions:[], answers:[], missionProgress:{}, xpHistory:[], lastActiveDate:null, battlesWon:0, puzzlesCompleted:0, isAdmin:false, lastSeenMessageId:null, soundOn:true, hapticOn:true, brightness:100, filialeBilanz:{}, battleDifficulty:0.65 };
+
+/* -------- KARRIERE-TITEL pro Track & Level -------- */
+const CAREER_TITLES = {
+  sales:      ["Sales Trainee","Junior Berater","Berater","Senior Berater","Sales Consultant","Senior Consultant","Account Manager","Key Account Manager","Sales Expert","Sales Lead"],
+  service:    ["Service Trainee","Junior Support","Support Specialist","Senior Specialist","Service Consultant","Senior Consultant","Service Expert","Team Lead Service","Service Manager","Head of Service"],
+  leadership: ["Nachwuchsführungskraft","Junior Manager","Teamleiter","Senior Teamleiter","Bereichsleiter","Senior Manager","Regionalleiter","Senior Regionalleiter","Direktor","Senior Direktor"],
+};
+function roleForLevel(track, level){
+  const list = CAREER_TITLES[track] || CAREER_TITLES.sales;
+  const idx = Math.max(0, Math.min(list.length - 1, level - 1));
+  return list[idx];
+}
+
+/* -------- ANALYTICS (lokal, für Admin-Panel) -------- */
+const AN_KEY = "nextlevel_analytics";
+function loadAnalytics(){
+  try{
+    const raw = localStorage.getItem(AN_KEY);
+    return raw ? JSON.parse(raw) : { missionStarts:{}, missionCompletions:{}, wrongAnswers:{}, battleStarts:0, battleDropoffs:0, trackUsage:{}, sessionCount:0, totalSessionMs:0 };
+  }catch(e){ return { missionStarts:{}, missionCompletions:{}, wrongAnswers:{}, battleStarts:0, battleDropoffs:0, trackUsage:{}, sessionCount:0, totalSessionMs:0 }; }
+}
+let analytics = loadAnalytics();
+function saveAnalytics(){ try{ localStorage.setItem(AN_KEY, JSON.stringify(analytics)); }catch(e){} }
+function trackEvent(type, key){
+  if(type === "missionStart"){ analytics.missionStarts[key] = (analytics.missionStarts[key]||0)+1; }
+  else if(type === "missionComplete"){ analytics.missionCompletions[key] = (analytics.missionCompletions[key]||0)+1; }
+  else if(type === "wrongAnswer"){ analytics.wrongAnswers[key] = (analytics.wrongAnswers[key]||0)+1; }
+  else if(type === "battleStart"){ analytics.battleStarts++; }
+  else if(type === "battleDropoff"){ analytics.battleDropoffs++; }
+  else if(type === "trackUsage"){ analytics.trackUsage[key] = (analytics.trackUsage[key]||0)+1; }
+  saveAnalytics();
+}
+
+/* -------- WEEKLY EVENT (Montag = doppelte XP) -------- */
+function isWeeklyEventActive(){ return new Date().getDay() === 1; }
+function weeklyMultiplier(){ return isWeeklyEventActive() ? 2 : 1; }
+
+/* -------- FILIALE-BILANZ (Battle-Historie pro Filiale) -------- */
+function getFilialeShort(team){
+  return (team || "").replace(/^Filiale\s+/i, "").replace(/^Regionalleitung\s+/i, "");
+}
+function getFilialeBilanzText(oppTeam){
+  const key = getFilialeShort(oppTeam);
+  const b = (state.filialeBilanz && state.filialeBilanz[key]) || null;
+  if(!b || (b.w + b.t + b.l) === 0) return `Erstes Aufeinandertreffen mit Filiale ${key}.`;
+  return `Bilanz gegen ${key}: ${b.w} Sieg${b.w===1?'':'e'} · ${b.t} Unentschieden · ${b.l} Niederlage${b.l===1?'':'n'}`;
+}
+function recordFilialeBilanz(team, result){
+  const key = getFilialeShort(team);
+  if(!state.filialeBilanz) state.filialeBilanz = {};
+  if(!state.filialeBilanz[key]) state.filialeBilanz[key] = { w:0, t:0, l:0 };
+  if(result === "w") state.filialeBilanz[key].w++;
+  else if(result === "t") state.filialeBilanz[key].t++;
+  else state.filialeBilanz[key].l++;
+}
+
+/* -------- ADAPTIVE GEGNERSTÄRKE IM BATTLE-MODUS --------
+   state.battleDifficulty = Trefferquote des Gegners (0.35 = leicht, 0.80 = schwer).
+   Nach jedem Kampf leicht angepasst: Sieg -> etwas schwerer, Niederlage -> etwas leichter. */
+function adjustBattleDifficulty(result){
+  let d = state.battleDifficulty || 0.65;
+  if(result === "w") d += 0.04;
+  else if(result === "l") d -= 0.04;
+  state.battleDifficulty = Math.max(0.35, Math.min(0.80, d));
+}
+function difficultyLabel(){
+  const d = state.battleDifficulty || 0.65;
+  if(d <= 0.45) return "Einsteiger";
+  if(d <= 0.60) return "Ausgewogen";
+  if(d <= 0.72) return "Herausfordernd";
+  return "Experte";
+}
 let state = loadState();
 let pendingTrack = null;
 
@@ -1602,6 +1871,46 @@ function toggleAdminPanel(){
 
 function renderAdminState(){
   document.getElementById("adminStateJson").textContent = JSON.stringify(state, null, 2);
+  renderAdminAnalytics();
+}
+function renderAdminAnalytics(){
+  const el = document.getElementById("adminAnalytics");
+  if(!el) return;
+  const totalStarts = Object.values(analytics.missionStarts).reduce((a,b)=>a+b,0);
+  const totalCompletions = Object.values(analytics.missionCompletions).reduce((a,b)=>a+b,0);
+  const completionRate = totalStarts ? Math.round(totalCompletions/totalStarts*100) : 0;
+  let topMission = "–", topStarts = 0;
+  Object.entries(analytics.missionStarts).forEach(([id,c])=>{
+    if(c > topStarts){ topStarts = c; const m = MISSIONS.find(x=>x.id===id); topMission = m ? m.title : id; }
+  });
+  let worstQ = "–", worstCount = 0;
+  Object.entries(analytics.wrongAnswers).forEach(([key,c])=>{
+    if(c > worstCount){
+      worstCount = c;
+      const qi = key.lastIndexOf("_q");
+      const missionId = key.slice(0, qi);
+      const qIdx = key.slice(qi+2);
+      const m = MISSIONS.find(x=>x.id===missionId);
+      worstQ = m ? (m.title + " · F" + (Number(qIdx)+1)) : key;
+    }
+  });
+  const battleDropoffRate = analytics.battleStarts ? Math.round(analytics.battleDropoffs/analytics.battleStarts*100) : 0;
+  const trackEntries = Object.entries(analytics.trackUsage).sort((a,b)=>b[1]-a[1]);
+  const topTrack = trackEntries.length ? (TRACKS[trackEntries[0][0]] ? TRACKS[trackEntries[0][0]].short : trackEntries[0][0]) : "–";
+  const avgSessionMin = analytics.sessionCount ? Math.round((analytics.totalSessionMs/analytics.sessionCount)/60000) : 0;
+
+  el.innerHTML = `
+    <div class="admin-stat-grid">
+      <div class="admin-stat"><div class="v">${analytics.sessionCount||0}</div><div class="l">Sessions</div></div>
+      <div class="admin-stat"><div class="v">${avgSessionMin}m</div><div class="l">Ø Sitzungsdauer</div></div>
+      <div class="admin-stat"><div class="v">${totalStarts}</div><div class="l">Missionen gestartet</div></div>
+      <div class="admin-stat"><div class="v">${completionRate}%</div><div class="l">Abschlussquote</div></div>
+      <div class="admin-stat"><div class="v" style="font-size:11.5px">${topMission}</div><div class="l">Meistgestartet</div></div>
+      <div class="admin-stat"><div class="v" style="font-size:11.5px">${worstQ}</div><div class="l">Meiste Fehler</div></div>
+      <div class="admin-stat"><div class="v">${analytics.battleStarts||0}</div><div class="l">Battles gestartet</div></div>
+      <div class="admin-stat"><div class="v">${battleDropoffRate}%</div><div class="l">Battle-Abbrüche</div></div>
+      <div class="admin-stat" style="grid-column:1/-1"><div class="v">${topTrack}</div><div class="l">Meistgenutzter Track</div></div>
+    </div>`;
 }
 
 function adminSaveApiUrl(){
@@ -1771,6 +2080,7 @@ const LEADERBOARD = {
     { name:"Melanie R.", team:"Filiale Berlin", xp:3980 },
     { name:"Tim H.", team:"Filiale Frankfurt", xp:3510, delta:2 },
     { name:"Anja D.", team:"Filiale Stuttgart", xp:3240, delta:-1 },
+    { name:"Meltem Ö.", team:"Filiale Köln-City", xp:2890 },
     { name:"YOU", team:"Filiale Köln-City", xp:2450, isYou:true, delta:6 },
     { name:"Kevin M.", team:"Filiale Düsseldorf", xp:2380, delta:-2 },
     { name:"Nina S.", team:"Filiale Leipzig", xp:2110 },
@@ -1788,6 +2098,7 @@ const LEADERBOARD = {
     { name:"Frank D.", team:"Regionalleitung Nord", xp:6200 },
     { name:"Katrin B.", team:"Regionalleitung West", xp:5480 },
     { name:"YOU", team:"Filiale Köln-City", xp:2450, isYou:true, delta:3 },
+    { name:"David K.", team:"Filiale Köln-City", xp:2020 },
     { name:"Stefan W.", team:"Filiale Stuttgart", xp:2100 },
     { name:"Rita J.", team:"Filiale Hannover", xp:1800 },
   ],
@@ -1809,6 +2120,7 @@ function go(id){
   if(id==="progress") renderProgress();
   if(id==="leaderboard") renderLeaderboard("track");
   if(id==="profile") renderProfile();
+  if(id==="settings") renderSettings();
   if(id==="trackPicker") renderTrackPicker();
   if(id==="messages") loadAndRenderMessages();
 }
@@ -1819,23 +2131,24 @@ function renderTrackPicker(){
   document.querySelectorAll("#trackOptions .track").forEach(el=>{
     el.classList.toggle("selected", el.dataset.track === pendingTrack);
   });
-  document.getElementById("trackNextBtn").classList.toggle("enabled", !!pendingTrack);
   document.getElementById("trackBackBtn").style.display = state.track ? "flex" : "none";
 }
 function selectTrack(track){
+  // Bereits aktiver Track erneut angetippt: nur visuell bestätigen, nicht navigieren (kein ungewolltes Zurückspringen)
+  if(track === state.track){
+    pendingTrack = track;
+    renderTrackPicker();
+    return;
+  }
   pendingTrack = track;
   document.querySelectorAll("#trackOptions .track").forEach(el=>{
     el.classList.toggle("selected", el.dataset.track === track);
   });
-  document.getElementById("trackNextBtn").classList.add("enabled");
-  try{ navigator.vibrate && navigator.vibrate(30); }catch(e){}
-}
-function confirmTrack(){
-  if(!pendingTrack) return;
-  const changed = state.track && state.track !== pendingTrack;
-  state.track = pendingTrack;
+  hapticPulse(30);
+  const hadTrackBefore = !!state.track;
+  state.track = track;
   saveState();
-  if(changed) toast("Track gewechselt: " + TRACKS[pendingTrack].emj + " " + TRACKS[pendingTrack].name);
+  if(hadTrackBefore) toast("Track gewechselt: " + TRACKS[track].emj + " " + TRACKS[track].name);
   go("home");
 }
 
@@ -1858,6 +2171,22 @@ function renderHome(){
   if(state.track){
     document.getElementById("homeTrackEmj").textContent = TRACKS[state.track].emj;
     document.getElementById("homeTrackName").textContent = TRACKS[state.track].name;
+  }
+
+  document.getElementById("weeklyBanner").style.display = isWeeklyEventActive() ? "flex" : "none";
+
+  const track = state.track || "sales";
+  const rankedList = (LEADERBOARD[track] || []).map(x => x.isYou ? {...x, xp:state.xp} : x).sort((a,b)=>b.xp-a.xp);
+  const myIdx = rankedList.findIndex(x=>x.isYou);
+  const chaseCard = document.getElementById("chaseCard");
+  if(myIdx > 0){
+    const ahead = rankedList[myIdx-1];
+    const gap = Math.max(0, ahead.xp - state.xp);
+    chaseCard.style.display = "flex";
+    document.getElementById("chaseTitle").textContent = "Nur " + gap.toLocaleString('de-DE') + " XP bis Platz " + myIdx;
+    document.getElementById("chaseSub").textContent = ahead.name + " in der " + TRACKS[track].name + "-Rangliste überholen";
+  } else {
+    chaseCard.style.display = "none";
   }
 }
 
@@ -2024,6 +2353,8 @@ function startQuiz(missionId){
   if(!mission) return;
   quizState = { missionId, mission, index:0, correctCount:0, answered:false, xpBefore:state.xp };
   document.getElementById("qTotal").textContent = mission.questions.length;
+  trackEvent("missionStart", missionId);
+  trackEvent("trackUsage", mission.track);
   renderQuestion();
   go("quiz");
 }
@@ -2059,14 +2390,17 @@ function answer(i){
   if(correct){
     picked.classList.add("correct");
     quizState.correctCount++;
-    try{ navigator.vibrate && navigator.vibrate(100); }catch(e){}
+    hapticPulse(100);
+    playTone(true);
     showFeedback(true);
     spawnSparkles(picked);
   } else {
     picked.classList.add("wrong");
     nodes[q.correct].classList.add("reveal");
-    try{ navigator.vibrate && navigator.vibrate([50,50,50]); }catch(e){}
+    hapticPulse([50,50,50]);
+    playTone(false);
     showFeedback(false);
+    trackEvent("wrongAnswer", quizState.missionId + "_q" + quizState.index);
   }
   document.getElementById("quizBar").style.width = ((quizState.index + 1) / quizState.mission.questions.length * 100) + "%";
   document.getElementById("nextBtn").classList.add("enabled");
@@ -2076,7 +2410,7 @@ function answer(i){
 function showFeedback(ok){
   const fb = document.getElementById("feedback");
   fb.className = "feedback show " + (ok ? "ok" : "bad");
-  document.getElementById("fbTitle").textContent = ok ? "Richtig! +100 XP" : "Leider falsch. +0 XP";
+  document.getElementById("fbTitle").textContent = ok ? ("Richtig! +" + (100 * weeklyMultiplier()) + " XP") : "Leider falsch. +0 XP";
   document.getElementById("fbText").textContent = ok ? "Super gemacht, weiter so!" : "Nicht schlimm — die richtige Antwort ist markiert.";
   document.getElementById("fbIcon").innerHTML = ok
     ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
@@ -2105,10 +2439,19 @@ function nextQuestion(){
     finishQuiz();
   }
 }
+function rollReward(baseXp){
+  // 70% normal · 20% Bonus (+50%) · 10% Jackpot (verdoppelt)
+  const roll = Math.random();
+  if(roll < 0.10) return { xp: Math.round(baseXp * 2), tier:"jackpot" };
+  if(roll < 0.30) return { xp: Math.round(baseXp * 1.5), tier:"bonus" };
+  return { xp: baseXp, tier:"normal" };
+}
 function finishQuiz(){
-  const earned = quizState.correctCount * 100;
+  const base = quizState.correctCount * 100 * weeklyMultiplier();
+  const { xp: earned, tier } = quizState.correctCount > 0 ? rollReward(base) : { xp:0, tier:"normal" };
   const before = state.xp;
   const oldLevel = state.level;
+  const oldTrack = state.track;
   state.xp += earned;
   const newLevel = Math.max(1, Math.ceil(state.xp / 500));
   const levelUp = newLevel > oldLevel;
@@ -2119,16 +2462,19 @@ function finishQuiz(){
   delete state.missionProgress[quizState.missionId];
   if(earned > 0) logXpAndStreak(earned);
   saveState();
+  trackEvent("missionComplete", quizState.missionId);
   if(earned > 0) syncXpToServer(earned, quizState.missionId);
   document.getElementById("scoreN").textContent = quizState.correctCount;
   document.getElementById("scoreTotal").textContent = quizState.mission.questions.length;
   document.getElementById("resultXp").textContent = earned;
   document.getElementById("xpBefore").textContent = before;
   document.getElementById("xpAfter").textContent = state.xp;
+  const tagEl = document.getElementById("resultRewardTag");
+  tagEl.innerHTML = tier === "jackpot" ? '<span class="jackpot-tag">🎰 JACKPOT · x2 XP</span>' : tier === "bonus" ? '<span class="bonus-tag">⭐ BONUS · x1,5 XP</span>' : "";
   go("result");
   runConfetti();
   if(levelUp){
-    setTimeout(()=>toast("🎉 Level Up! Du bist jetzt Level " + newLevel), 700);
+    setTimeout(()=>showPromotion(oldTrack, newLevel), 700);
   }
 }
 function exitQuiz(){ quizState = null; go("missions"); }
@@ -2156,12 +2502,54 @@ function runConfetti(){
 }
 
 /* -------- LEADERBOARD -------- */
+function seededRandom(seed){
+  let s = seed % 2147483647; if(s <= 0) s += 2147483646;
+  return function(){ s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+}
+function renderActivityFeed(){
+  document.getElementById("lbSectionTitle").textContent = "Was ist passiert?";
+  document.getElementById("lbToggleAll").style.display = "none";
+  document.getElementById("podium").innerHTML = "";
+  const names = ["Sarah K.","Julian P.","Melanie R.","Dennis F.","Tim H.","Anja D.","Meltem Ö.","David K.","Lisa T.","Kevin M."];
+  const verbs = [
+    m => `hat die Mission <b>${m}</b> abgeschlossen`,
+    () => `hat ein Battle gewonnen`,
+    () => `ist ein Level aufgestiegen`,
+    () => `hat einen Jackpot geknackt 🎰`,
+    m => `hat <b>${m}</b> gestartet`,
+    () => `hat einen 7-Tage-Streak erreicht 🔥`,
+  ];
+  const daySeed = Math.floor(Date.now() / 86400000);
+  const rnd = seededRandom(daySeed * 97 + 13);
+  const items = [];
+  let minutesAgo = 4;
+  for(let i=0;i<10;i++){
+    const name = names[Math.floor(rnd()*names.length)];
+    const mission = MISSIONS[Math.floor(rnd()*MISSIONS.length)];
+    const verb = verbs[Math.floor(rnd()*verbs.length)];
+    items.push({ name, text: verb(mission.title), minutesAgo });
+    minutesAgo += Math.floor(rnd()*35) + 5;
+  }
+  document.getElementById("rankList").innerHTML = items.map(it => {
+    const timeStr = it.minutesAgo < 60 ? `vor ${it.minutesAgo} Min` : `vor ${Math.floor(it.minutesAgo/60)} Std`;
+    return `
+      <div class="activity-item">
+        <div class="a-avatar">${it.name.charAt(0)}</div>
+        <div class="a-body"><b>${it.name}</b> ${it.text}</div>
+        <div class="a-time">${timeStr}</div>
+      </div>`;
+  }).join("");
+}
 function renderLeaderboard(mode){
+  lbExpanded = false;
   // Chip aktiv setzen
   document.querySelectorAll("#lbChips .chip[data-lb]").forEach(c=>{
     c.classList.toggle("active", c.dataset.lb === mode);
     c.onclick = ()=> renderLeaderboard(c.dataset.lb);
   });
+
+  if(mode === "activity"){ renderActivityFeed(); return; }
+  document.getElementById("lbSectionTitle").textContent = "Weitere Ränge";
 
   const track = state.track || "sales";
   let list = [];
@@ -2173,8 +2561,17 @@ function renderLeaderboard(mode){
   } else if(mode === "week"){
     // Wochenwerte simulieren (kleinere Zahlen)
     list = (LEADERBOARD[track] || []).map(x=>({...x, xp: Math.round(x.xp * 0.15)}));
+  } else if(mode === "filiale"){
+    // Alle Kolleg:innen der eigenen Filiale, trackübergreifend (YOU nur einmal)
+    const home = "Filiale Köln-City";
+    let youUsed = false;
+    list = Object.values(LEADERBOARD).flat().filter(x=>{
+      if(x.team !== home) return false;
+      if(x.isYou){ if(youUsed) return false; youUsed = true; }
+      return true;
+    });
   }
-  // "YOU" durch aktuellen State-XP ersetzen (in "track" und "all")
+  // "YOU" durch aktuellen State-XP ersetzen (in "track", "all" und "filiale")
   list = list.map(x => x.isYou ? {...x, xp: mode==="week" ? Math.round(state.xp*0.15) : state.xp, name: state.name.toUpperCase()} : x);
   list.sort((a,b)=>b.xp - a.xp);
   const top3 = list.slice(0,3);
@@ -2201,7 +2598,15 @@ function renderLeaderboard(mode){
   }).join("");
 
   // Rest
-  document.getElementById("rankList").innerHTML = rest.slice(0,8).map((p, idx)=>{
+  lastLbRest = rest;
+  renderRankList();
+}
+let lastLbRest = [];
+let lbExpanded = false;
+function renderRankList(){
+  const rest = lastLbRest || [];
+  const shown = lbExpanded ? rest : rest.slice(0,8);
+  document.getElementById("rankList").innerHTML = shown.map((p, idx)=>{
     const rank = idx + 4;
     const you = p.isYou ? " you" : "";
     const delta = p.delta || 0;
@@ -2216,6 +2621,17 @@ function renderLeaderboard(mode){
         <div class="r-delta ${dCls}">${dStr}</div>
       </div>`;
   }).join("");
+  const toggleLink = document.getElementById("lbToggleAll");
+  if(rest.length > 8){
+    toggleLink.style.display = "inline";
+    toggleLink.textContent = lbExpanded ? "Weniger anzeigen" : `Alle anzeigen (${rest.length - 8})`;
+  } else {
+    toggleLink.style.display = "none";
+  }
+}
+function toggleLbExpand(){
+  lbExpanded = !lbExpanded;
+  renderRankList();
 }
 
 /* -------- PROGRESS -------- */
@@ -2252,8 +2668,27 @@ function renderLeagueCard(){
   document.getElementById("leagueDelta").textContent = "#" + rank;
 }
 
+function renderStreakWeek(){
+  const labels = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+  const el = document.getElementById("streakWeek");
+  if(!el) return;
+  const today = new Date();
+  let html = "";
+  for(let i=6;i>=0;i--){
+    const d = new Date(today.getTime() - i*86400000);
+    const ds = dateStr(d);
+    const active = state.xpHistory.some(e => e.date === ds && e.amount > 0);
+    const isToday = i === 0;
+    html += `<div class="streak-day ${active?'active':''} ${isToday?'today':''}">
+      <div class="d-label">${labels[d.getDay()]}</div>
+      <div class="d-dot">${active ? '🔥' : ''}</div>
+    </div>`;
+  }
+  el.innerHTML = html;
+}
 function renderProgress(){
   document.getElementById("streakNum").textContent = state.streak;
+  renderStreakWeek();
   document.getElementById("kpiXp").textContent = state.xp;
   document.getElementById("kpiMissions").textContent = state.completedMissions.length;
 
@@ -2285,7 +2720,8 @@ function renderProfile(){
   document.getElementById("profKpiStreak").textContent = state.streak;
   document.getElementById("profName").textContent = state.name;
   document.getElementById("profAvatarInitial").textContent = (state.name || "?").charAt(0).toUpperCase();
-  document.getElementById("profRole").textContent = authToken ? "Mitarbeiter · Angemeldet" : "Mitarbeiter · Lokaler Demo-Modus";
+  const role = roleForLevel(state.track || "sales", state.level);
+  document.getElementById("profRole").textContent = role + (authToken ? " · Angemeldet" : " · Lokaler Demo-Modus");
   document.getElementById("logoutMenuItem").style.display = authToken ? "flex" : "none";
   document.getElementById("resetMenuItem").style.display = authToken ? "none" : "flex";
   const badgeCount = getEarnedBadges().length;
@@ -2307,6 +2743,52 @@ function resetApp(){
   toast("Demo zurückgesetzt");
 }
 
+/* -------- BEFÖRDERUNG -------- */
+function showPromotion(track, newLevel){
+  const t = track || state.track || "sales";
+  document.getElementById("promoTitle").textContent = roleForLevel(t, newLevel);
+  document.getElementById("promoSub").textContent = "Level " + newLevel + " · " + TRACKS[t].name;
+  document.getElementById("promoBadge").textContent = TRACKS[t].emj;
+  document.getElementById("promoOverlay").classList.remove("hidden");
+  hapticPulse([100,40,100,40,200]);
+}
+function closePromotion(){
+  document.getElementById("promoOverlay").classList.add("hidden");
+}
+
+/* -------- SETTINGS -------- */
+function renderSettings(){
+  document.getElementById("soundToggle").classList.toggle("on", !!state.soundOn);
+  document.getElementById("hapticToggle").classList.toggle("on", !!state.hapticOn);
+  const b = state.brightness || 100;
+  document.getElementById("brightnessRange").value = b;
+  document.getElementById("brightnessVal").textContent = b + "%";
+}
+function toggleSetting(key){
+  state[key] = !state[key];
+  saveState();
+  document.getElementById(key === "soundOn" ? "soundToggle" : "hapticToggle").classList.toggle("on", !!state[key]);
+  if(key === "soundOn" && state.soundOn) playTone(true);
+  if(key === "hapticOn" && state.hapticOn) hapticPulse(40);
+}
+function updateBrightness(val){
+  state.brightness = Number(val);
+  document.getElementById("brightnessVal").textContent = val + "%";
+  document.getElementById("phoneScreen").style.filter = "brightness(" + (val/100) + ")";
+  saveState();
+}
+function sendFeedback(){
+  const txt = document.getElementById("feedbackText").value.trim();
+  if(!txt) { toast("Bitte erst etwas eintippen"); return; }
+  try{
+    const list = JSON.parse(localStorage.getItem("nextlevel_feedback") || "[]");
+    list.push({ text: txt, date: new Date().toISOString(), name: state.name });
+    localStorage.setItem("nextlevel_feedback", JSON.stringify(list));
+  }catch(e){}
+  document.getElementById("feedbackText").value = "";
+  toast("Danke für dein Feedback! 🙌");
+}
+
 /* -------- TOAST -------- */
 function toast(msg){
   const wrap = document.getElementById("toast-wrap");
@@ -2317,9 +2799,47 @@ function toast(msg){
   setTimeout(()=>el.remove(), 2100);
 }
 
+/* -------- SOUND & HAPTIK (Settings-gesteuert) -------- */
+function hapticPulse(pattern){
+  if(!state.hapticOn) return;
+  try{ navigator.vibrate && navigator.vibrate(pattern); }catch(e){}
+}
+let audioCtx = null;
+function playTone(ok){
+  if(!state.soundOn) return;
+  try{
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.type = "sine";
+    osc.frequency.value = ok ? 880 : 220;
+    gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.22, audioCtx.currentTime + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (ok ? 0.22 : 0.32));
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.35);
+    if(ok){
+      const osc2 = audioCtx.createOscillator();
+      osc2.connect(gain);
+      osc2.type = "sine";
+      osc2.frequency.value = 1320;
+      osc2.start(audioCtx.currentTime + 0.09);
+      osc2.stop(audioCtx.currentTime + 0.3);
+    }
+  }catch(e){}
+}
+
 /* -------- INIT -------- */
 window.addEventListener("load", ()=>{
   checkServer();
+  analytics.sessionCount = (analytics.sessionCount || 0) + 1;
+  saveAnalytics();
+  const sessionStartedAt = Date.now();
+  window.addEventListener("beforeunload", ()=>{
+    analytics.totalSessionMs = (analytics.totalSessionMs || 0) + (Date.now() - sessionStartedAt);
+    saveAnalytics();
+  });
 
   // Splash 1.5s → Auth (neu/abgemeldet) oder Track-Picker/Home (angemeldet)
   setTimeout(()=>{
@@ -2440,7 +2960,7 @@ function assignPuzzle(missionId){
     puzzleState.locked = true;
     bucketEl.classList.add("correct");
     showPuzzleFeedback(true);
-    try{ navigator.vibrate && navigator.vibrate(100); }catch(e){}
+    hapticPulse(100);
     document.getElementById("puzzleCard").classList.add("leaving");
     setTimeout(()=>{
       puzzleState.index++;
@@ -2453,7 +2973,7 @@ function assignPuzzle(missionId){
   } else {
     bucketEl.classList.add("wrong");
     showPuzzleFeedback(false);
-    try{ navigator.vibrate && navigator.vibrate([50,50,50]); }catch(e){}
+    hapticPulse([50,50,50]);
     setTimeout(()=>{
       bucketEl.classList.remove("wrong");
       document.getElementById("puzzleFeedback").classList.remove("show");
@@ -2462,9 +2982,11 @@ function assignPuzzle(missionId){
 }
 
 function finishPuzzle(){
-  const earned = 100;
+  const base = 100 * weeklyMultiplier();
+  const { xp: earned, tier } = rollReward(base);
   const before = puzzleState.xpBefore;
   const oldLevel = state.level;
+  const oldTrack = state.track;
   state.xp += earned;
   const newLevel = Math.max(1, Math.ceil(state.xp / 500));
   const levelUp = newLevel > oldLevel;
@@ -2474,12 +2996,15 @@ function finishPuzzle(){
   saveState();
   syncXpToServer(earned, "puzzle-" + puzzleState.track);
 
+  document.getElementById("pzXpEarned").textContent = earned;
   document.getElementById("pzXpBefore").textContent = before;
   document.getElementById("pzXpAfter").textContent = state.xp;
+  const tagEl = document.getElementById("pzRewardTag");
+  tagEl.innerHTML = tier === "jackpot" ? '<span class="jackpot-tag">🎰 JACKPOT · x2 XP</span>' : tier === "bonus" ? '<span class="bonus-tag">⭐ BONUS · x1,5 XP</span>' : "";
   go("puzzleResult");
   runConfettiPuzzle();
   if(levelUp){
-    setTimeout(()=>toast("🎉 Level Up! Du bist jetzt Level " + newLevel), 700);
+    setTimeout(()=>showPromotion(oldTrack, newLevel), 700);
   }
   puzzleState = null;
 }
@@ -2524,6 +3049,7 @@ const OPPONENTS = [
 
 function exitBattle(){
   clearInterval(battleTimerInterval);
+  if(battleState) trackEvent("battleDropoff");
   battleState = null;
   go("battleLobby");
 }
@@ -2533,7 +3059,9 @@ function startMatchmaking() {
   document.getElementById("btSearchingState").querySelector("button").disabled = true;
   document.getElementById("btSearchingState").querySelector("p").textContent = "Datenbank wird gescannt...";
   
-  try { navigator.vibrate && navigator.vibrate([100, 50, 100]); } catch(e){}
+  hapticPulse([100, 50, 100]);
+  trackEvent("battleStart");
+  trackEvent("trackUsage", state.track || "sales");
 
   setTimeout(() => {
     // Random Gegner auswählen
@@ -2559,11 +3087,13 @@ function startMatchmaking() {
     document.getElementById("btOppName").textContent = opp.name;
     document.getElementById("btOppTrack").textContent = trackName;
     document.getElementById("btOppDetail").textContent = `${opp.name} aus ${opp.team} fordert dich im ${trackName}-Track heraus!`;
+    document.getElementById("btBilanzText").textContent = getFilialeBilanzText(opp.team);
+    document.getElementById("btDifficultyLabel").textContent = "Gegner-Level: " + difficultyLabel();
 
     document.getElementById("btSearchingState").classList.add("hide");
     document.getElementById("btFoundState").classList.remove("hide");
 
-    try { navigator.vibrate && navigator.vibrate(300); } catch(e){}
+    hapticPulse(300);
   }, 1500);
 }
 
@@ -2638,7 +3168,7 @@ function renderBattleQuestion() {
   // Simuliere gegnerische Antwort
   const delay = 3000 + Math.random() * 4000; // Gegner antwortet nach 3-7 Sekunden
   battleState.oppAnswerTime = delay;
-  battleState.oppCorrect = Math.random() > 0.35; // 65% Chance, dass der Gegner richtig antwortet
+  battleState.oppCorrect = Math.random() < (state.battleDifficulty || 0.65); // Trefferquote passt sich an bisherige Kämpfe an
 }
 
 function startBattleTimer() {
@@ -2659,7 +3189,7 @@ function startBattleTimer() {
       const statusEl = document.getElementById("btOppStatus");
       statusEl.className = "opp-status done";
       statusEl.innerHTML = `✅ ${battleState.opp.name} hat geantwortet!`;
-      try { navigator.vibrate && navigator.vibrate(50); } catch(e){}
+      hapticPulse(50);
     }
 
     if (remaining <= 0) {
@@ -2688,11 +3218,13 @@ function answerBattle(i) {
     battleState.userScore++;
     document.getElementById("btUserScore").textContent = `${battleState.userScore} / 3`;
     spawnSparkles(picked);
-    try { navigator.vibrate && navigator.vibrate(100); } catch(e){}
+    hapticPulse(100);
+    playTone(true);
   } else {
     picked.classList.add("wrong");
     nodes[q.correct].classList.add("reveal");
-    try { navigator.vibrate && navigator.vibrate([50,50,50]); } catch(e){}
+    hapticPulse([50,50,50]);
+    playTone(false);
   }
 
   // Gegnerische Antwort auflösen falls noch nicht geschehen
@@ -2706,7 +3238,7 @@ function timeoutBattle() {
   nodes.forEach(n=>n.classList.add("disabled"));
   nodes[q.correct].classList.add("reveal");
   toast("⏰ Zeit abgelaufen!");
-  try { navigator.vibrate && navigator.vibrate([50,50,50]); } catch(e){}
+  hapticPulse([50,50,50]);
   resolveOpponentAnswer();
 }
 
@@ -2747,20 +3279,28 @@ function finishBattle() {
   let title = "NIEDERLAGE!";
   let sub = `Kopf hoch! ${battleState.opp.name} war diesmal schneller.`;
   let trophy = "🛡️";
+  let bilanzResult = "l";
 
   if (userScore > oppScore) {
     earnedXp = 150;
     title = "SIEG! 🏆";
     sub = `Hervorragend! Du hast ${battleState.opp.name} geschlagen.`;
     trophy = "🏆";
+    bilanzResult = "w";
   } else if (userScore === oppScore) {
     earnedXp = 50;
     title = "UNENTSCHIEDEN!";
     sub = `Ein Kopf-an-Kopf-Rennen mit ${battleState.opp.name}.`;
     trophy = "🤝";
+    bilanzResult = "t";
   }
 
+  recordFilialeBilanz(battleState.opp.team, bilanzResult);
+  adjustBattleDifficulty(bilanzResult);
+
+  earnedXp = earnedXp * weeklyMultiplier();
   const oldLevel = state.level;
+  const oldTrack = state.track;
   state.xp += earnedXp;
   const newLevel = Math.max(1, Math.ceil(state.xp / 500));
   const levelUp = newLevel > oldLevel;
@@ -2785,7 +3325,7 @@ function finishBattle() {
   }
   
   if (levelUp) {
-    setTimeout(() => toast("🎉 Level Up! Du bist jetzt Level " + newLevel), 700);
+    setTimeout(() => showPromotion(oldTrack, newLevel), 700);
   }
 }
 
